@@ -1,0 +1,33 @@
+.own_tooltip {
+    border-radius: 7px;
+    border: 1px solid black;
+    padding: 10px;
+    /*width: 150px;*/
+    display: table;
+    left: 0px;
+    top: 0px;
+    background-color: #ffffff;
+    display: none;
+
+    z-index: 100;
+
+    background-color: rgba(255, 255, 255, .8);
+    -ms-filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66FFFFFF, endColorstr=#66FFFFFF); /*IE fix */
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr=#66FFFFFF, endColorstr=#66FFFFFF); /* IE Fix */
+
+    pointer-events: none;
+}
+
+.tooltip_square {
+    width: 12px;
+    height: 12px;
+    background: blue; /*manipulated by javascript*/
+    border-style: solid;
+    border-width: 1px;
+    border-color: gray;
+    margin-right: 3px;
+}
+
+.tooltip_value_col {
+    padding-left: 10px;
+}

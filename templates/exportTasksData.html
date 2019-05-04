@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "/";
+</script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+<script>
+var socket = io.connect(location.protocol + '//' + location.host);
+function openFile(path)
+{
+    socket.emit('openPath', path);
+    return false;
+}
+socket.on('exportTaskDataDone', function(data)
+{
+     $("#btn").removeClass('disabled');
+     console.log(data);
+     document.getElementById("btn").innerHTML = "Export";
+     msg = "";
+     var arrayLength = data.path.length;
+     for (var i = 0; i < arrayLength; i++) {
+        msg += '<a href="#" onclick="return openFile(\'' + data.path[i].replace(/\\/g,"\\\\") + '\')" class="alert-link">'+data.path[i]+'</a>\n'
+     }
+     $("#msg").html("Your export file could be found at " + msg)
+     $('#alert').show();
+
+})
+function exportTasks ()
+{
+    zip = $('#zip').is(":checked");
+    csv = $('#csv').is(":checked");
+    if(!zip && !csv)
+        return;
+
+    $('#alert').hide();
+    var indices = []
+    $("#tasks option:selected").each(function () {
+    var $this = $(this);
+    if ($this.length) {
+        var index = $this.attr('taskid');
+        indices.push(index);
+    }});
+    let file = document.getElementById("name").value;
+    $("#btn").addClass('disabled');
+    document.getElementById("btn").innerHTML = "Generating export file";
+    socket.emit("exportTaskData",indices,file,zip,csv)
+}
+</script>
+{% endblock %}
+{% block body %}
+
+  <div class="jumbotron text-center">
+  <h1>Export tasks data</h1>
+    <div class="form-group">
+      <p class="lead" for="tasks">Select tasks to export</p>
+      <select style="width:100%" class="selectpicker text-center" style="text-align:center" data-width="100%" id="tasks" multiple data-live-search="true" name="tasks">
+       {% for task in tasks %}
+        <option style="text-align:center" taskid={{ task.id }}>Done by: {{ task.subject_name }}, Started at: {{ task.start_time_str }}, Type: {{ task.type }}</option>
+       {% endfor %}
+      </select>
+    </div>
+    <input type="text" id="name" class="form-control" style="text-align:center" placeholder="Choose export file name">
+    <div class="checkbox">
+        <label><input id="zip" type="checkbox" value="">Generate ZIP file (Used for importing data)</label>
+    </div>
+     <div class="checkbox">
+        <label><input id="csv" type="checkbox" value="">Generate CSV file (Viewable in Excel)</label>
+    </div>
+    <br>
+    <button id="btn" class="btn btn-primary btn-md" onclick="exportTasks()">Export</button>
+  </div>
+  <div id="alert" class="alert alert-success alert-dismissible collapse" role="alert" style="margin-top:2vw">
+        <h4 class="alert-heading">Export done!</h4>
+        <p id="msg"></p>
+        <button class="close" onclick="$('#alert').hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+{% endblock %}

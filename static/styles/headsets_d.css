@@ -1,0 +1,558 @@
+/**************************top-left*******************************/
+.circle {
+    border-radius: 50%;
+    line-height: 215%;
+    text-align: center;
+    color: #ffffff;
+    background: #7b7b80;
+}
+
+#picture {
+    background: url('../img/img1234.png') no-repeat center;
+    background-size: auto 100%;
+    width: 100%;
+    height: 100%;
+}
+
+#TwoHead {
+    background: url('../img/insightV2/head.png') no-repeat center;
+    background-size: auto 100%;
+    width: 100%;
+    height: 100%;
+}
+
+.circle {
+    display: none;
+}
+
+/*#main {
+     width: 36.5vw;
+     height: 36.5vw;
+     border: 1px solid transparent;
+}
+-->*/
+#FP1 {
+    display: block;
+    position: absolute;
+}
+
+#FPz {
+    display: block;
+    position: absolute;
+}
+
+#FP2 {
+    display: block;
+    position: absolute;
+}
+
+#AF7 {
+    display: block;
+    position: absolute;
+}
+
+#AF3 {
+    display: block;
+    position: absolute;
+}
+
+#AFz {
+    display: block;
+    position: absolute;
+}
+
+#AF4 {
+    display: block;
+    position: absolute;
+}
+
+#AF8 {
+    display: block;
+    position: absolute;
+}
+
+#F9 {
+    display: block;
+    position: absolute;
+}
+
+#F7 {
+    display: block;
+    position: absolute;
+}
+
+#F5 {
+    display: block;
+    position: absolute;
+}
+
+#F3 {
+    display: block;
+    position: absolute;
+}
+
+#F1 {
+    display: block;
+    position: absolute;
+}
+
+#Fz {
+    display: block;
+    position: absolute;
+}
+
+#F2 {
+    display: block;
+    position: absolute;
+}
+
+#F4 {
+    display: block;
+    position: absolute;
+}
+
+#F6 {
+    display: block;
+    position: absolute;
+}
+
+#F8 {
+    display: block;
+    position: absolute;
+}
+
+#F10 {
+    display: block;
+    position: absolute;
+}
+
+#FT9 {
+    display: block;
+    position: absolute;
+}
+
+#FT7 {
+    display: block;
+    position: absolute;
+}
+
+#FC5 {
+    display: block;
+    position: absolute;
+}
+
+#FC3 {
+    display: block;
+    position: absolute;
+}
+
+#FC1 {
+    display: block;
+    position: absolute;
+}
+
+#FCz {
+    display: block;
+    position: absolute;
+}
+
+#FC2 {
+    display: block;
+    position: absolute;
+}
+
+#FC4 {
+    display: block;
+    position: absolute;
+}
+
+#FC6 {
+    display: block;
+    position: absolute;
+}
+
+#FT8 {
+    display: block;
+    position: absolute;
+}
+
+#FT10 {
+    display: block;
+    position: absolute;
+}
+
+#T7 {
+    display: block;
+    position: absolute;
+}
+
+#C5 {
+    display: block;
+    position: absolute;
+}
+
+#C3 {
+    display: block;
+    position: absolute;
+}
+
+#C1 {
+    display: block;
+    position: absolute;
+}
+
+#Cz {
+    display: block;
+    position: absolute;
+}
+
+#C2 {
+    display: block;
+    position: absolute;
+}
+
+#C4 {
+    display: block;
+    position: absolute;
+}
+
+#C6 {
+    display: block;
+    position: absolute;
+}
+
+#T8 {
+    display: block;
+    position: absolute;
+}
+
+#TP9 {
+    display: block;
+    position: absolute;
+}
+
+#TP7 {
+    display: block;
+    position: absolute;
+}
+
+#CP5 {
+    display: block;
+    position: absolute;
+}
+
+#CP3 {
+    display: block;
+    position: absolute;
+}
+
+#CP1 {
+    display: block;
+    position: absolute;
+}
+
+#CPz {
+    display: block;
+    position: absolute;
+}
+
+#CP2 {
+    display: block;
+    position: absolute;
+}
+
+#CP4 {
+    display: block;
+    position: absolute;
+}
+
+#CP6 {
+    display: block;
+    position: absolute;
+}
+
+#TP8 {
+    display: block;
+    position: absolute;
+}
+
+#TP10 {
+    display: block;
+    position: absolute;
+}
+
+#CP8 {
+    display: block;
+    position: absolute;
+}
+
+#CP10 {
+    display: block;
+    position: absolute;
+}
+
+#P9 {
+    display: block;
+    position: absolute;
+}
+
+#P7 {
+    display: block;
+    position: absolute;
+}
+
+#P5 {
+    display: block;
+    position: absolute;
+}
+
+#P3 {
+    display: block;
+    position: absolute;
+}
+
+#P1 {
+    display: block;
+    position: absolute;
+}
+
+#Pz {
+    display: block;
+    position: absolute;
+}
+
+#P2 {
+    display: block;
+    position: absolute;
+}
+
+#P4 {
+    display: block;
+    position: absolute;
+}
+
+#P6 {
+    display: block;
+    position: absolute;
+}
+
+#P8 {
+    display: block;
+    position: absolute;
+}
+
+#P10 {
+    display: block;
+    position: absolute;
+}
+
+#PO7 {
+    display: block;
+    position: absolute;
+}
+
+#PO3 {
+    display: block;
+    position: absolute;
+}
+
+#POz {
+    display: block;
+    position: absolute;
+}
+
+#PO4 {
+    display: block;
+    position: absolute;
+}
+
+#PO8 {
+    display: block;
+    position: absolute;
+}
+
+#O1 {
+    display: block;
+    position: absolute;
+}
+
+#Oz {
+    display: block;
+    position: absolute;
+}
+
+#O2 {
+    display: block;
+    position: absolute;
+}
+
+#PO9 {
+    display: block;
+    position: absolute;
+}
+
+#O9 {
+    display: block;
+    position: absolute;
+}
+
+#Iz {
+    display: block;
+    position: absolute;
+}
+
+#O10 {
+    display: block;
+    position: absolute;
+}
+
+#PO10 {
+    display: block;
+    position: absolute;
+}
+
+/*spec headsets*/
+#spec_headset {
+    height: 50%;
+    width: 24%;
+    border: 1px solid rgb(0, 0, 0);
+    margin-top: 0.2vw;
+}
+
+#left {
+    height: 100%;
+    width: 100%;
+    background: rgb(232, 232, 233);
+}
+
+#right {
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+}
+
+#left_top {
+    width: 100%;
+    height: 45%;
+    border-bottom: 10px solid #ffffff;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+#left_mid {
+    width: 100%;
+    height: 10%;
+}
+
+#left_bottom {
+    width: 100%;
+    height: 45%;
+    border-top: 10px solid #ffffff;
+}
+
+.chart {
+    height: 100%;
+    width: 100%;
+}
+
+.col-2 {
+    margin-top: 10px;
+    margin-right: -20px;
+}
+
+.row {
+    background: rgb(232, 232, 233);
+    margin: 0;
+}
+
+#loading {
+    margin: 0;
+}
+
+.modebar {
+    display: none !important;
+}
+
+.fit-image {
+    width: 100%;
+    object-fit: cover;
+}
+
+h5 {
+    padding-top: 5px;
+}
+
+/**************************bottom-left*******************************/
+#changeDimention {
+    height: 10vh;
+    width: 5vw;
+    position: absolute;
+    z-index: 1;
+    cursor: pointer;
+    top: 61.3vh;
+    bottom: 20vh;
+    margin-top: 0.1vh;
+    margin-bottom: 0.1vh;
+    margin-left: 0.1vw;
+    margin-right: 0.1vw;
+    background-color: rgba(255, 0, 90, 0);
+    text-align: center;
+    box-shadow: 0.2px 0.2px 1px 1px rgb(160, 160, 216);
+}
+
+#changeDimention:hover {
+    background-color: rgba(88, 88, 184, 0.5);
+}
+
+.circletwo {
+    height: 2vw;
+    width: 2vw;
+    border-radius: 5vw;
+    position: absolute;
+    font-size: 0.8vw;
+    text-align: center;
+    color: #ffffff;
+    line-height: 1.8vw;
+    background: #7c7c84;
+}
+
+#leftcol {
+    border: 4px solid white;
+    border-left: 8px solid white;
+    background: #4d90fe;
+    background: rgb(232, 232, 233);
+    float: left;
+    width: 35%;
+    height: 99.5%;
+}
+
+#rightcol {
+    border: 4px solid white;
+    border-right: 8px solid white;
+    background: #fe441e;
+    background: rgb(232, 232, 233);
+    float: right;
+    width: 65%;
+    height: 99.5%;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+p {
+    font-size: 3vmin;
+}
+
+p img {
+    height: 1em;
+    width: auto;
+}
+
+p span {
+    height: 1em;
+    width: auto;
+}
+

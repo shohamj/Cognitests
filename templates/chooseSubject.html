@@ -1,0 +1,36 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "/chooseTask";
+</script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+
+{% endblock %}
+{% block body %}
+
+  <div class="jumbotron text-center">
+  <h1>Subject</h1>
+  <form  method="POST" action="/chooseSubject/send">
+    <div class="form-group" style="width:100%;">
+      <p class="lead" for="subject">Select an existing subject</p>
+      <select style="width:100%" class="selectpicker" id="subject" data-live-search="true" name="subject">
+       {% for subject in subjects %}
+        <option>{{ subject.name }}, {{ subject.serial}} </option>
+       {% endfor %}
+      </select>
+      <br>
+      <br>
+      <button type="submit" class="btn btn-primary btn-md">Choose selected</button>
+      <p class="lead text-muted" style="margin-bottom: 0">or</p>
+      <a href="/subjectDetails/_" class="btn btn-link btn-md text-muted">Add a new subject</a>
+    </div>
+    </form>
+ </div>
+  <script>
+      if($("#subject").prop('selectedIndex') === -1)
+        $(":submit").attr("disabled", true);
+      $( ".selectpicker" ).change(function() {
+      $(":submit").attr("disabled", false);      });
+    </script>
+{% endblock %}

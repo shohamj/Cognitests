@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "#";
+</script>
+{% endblock %}
+{% block body %}
+  <div class="jumbotron text-center">
+    <h1>Welcome </h1>
+    <p class="lead">Login using your existing account or use anonymous authentication.</p>
+    <a href="/headsets" class="btn btn-primary btn-lg">Anonymous Login</a>
+    <a href="#" data-toggle="modal" data-target="#login-modal" class="btn btn-secondary btn-lg">Login Existing User</a>
+  </div>
+	<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    	  <div class="modal-dialog">
+				<div class="loginmodal-container modal-content">
+					<h1>Login to Your Account</h1><br>
+				  <form>
+					<input type="text" name="user" placeholder="Username">
+					<input type="password" name="pass" placeholder="Password">
+					<input type="submit" name="login" class="login loginmodal-submit" value="Login">
+				  </form>
+
+				  <div class="login-help">
+					<a href="#">Register</a> - <a href="#">Forgot Password</a>
+				  </div>
+				</div>
+			</div>
+		  </div>
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "/headsets";
+</script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+{% endblock %}
+{% block body %}
+<style>
+.nav-tabs > a.active > a,
+.nav-tabs > a.active > a:focus,
+.nav-tabs > a.active > a:hover {
+  background-color: #428bca;
+  color: #fff;
+}
+</style>
+  <div class="jumbotron text-center">
+  <div class="row">
+    <div class="col-md-12">
+        <nav>
+            <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
+                <a class="nav-item nav-link active lead" id="nav-nback-tab" data-toggle="tab" href="#tab-nback" role="tab" aria-controls="nav-nback" aria-selected="true">N-Back Task</a>
+                <a class="nav-item nav-link lead" id="nav-eyes-tab" data-toggle="tab" href="#tab-eyes" role="tab" aria-controls="nav-eys" aria-selected="false">Eyes Task</a>
+                <a class="nav-item nav-link lead" id="nav-iaps-tab" data-toggle="tab" href="#tab-iaps" role="tab" aria-controls="nav-iaps" aria-selected="false">IAPS Task</a>
+            </div>
+        </nav>
+        <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="tab-nback" role="tabpanel" aria-labelledby="nav-nback-tab">
+              <h1>N-Back Task</h1>
+                  <form action="/chooseTask/send/nback" method="POST">
+                    <div class="form-group">
+                      <p class="lead" for="task">Select a task</p>
+                      <select style="width:100%" class="selectpicker" id="task" data-live-search="true" name="task">
+                       {% for task in nback_tasks %}
+                        <option value={{ task.id }}>{{ task.name }}</option>
+                       {% endfor %}
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-md">Choose selected task</button>
+            </form>
+            </div>
+            <div class="tab-pane fade" id="tab-eyes" role="tabpanel" aria-labelledby="nav-eyes-tab">
+            <h1>Eyes Task</h1>
+                  <form action="/chooseTask/send/eyes" method="POST">
+                    <div class="form-group">
+                      <p class="lead" for="task">Select a task</p>
+                      <select style="width:100%" class="selectpicker" id="task" data-live-search="true" name="task">
+                       {% for task in eyes_tasks %}
+                        <option value={{ task.id }}>{{ task.name }}</option>
+                       {% endfor %}
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-md">Choose selected task</button>
+            </form>
+            </div>
+            <div class="tab-pane fade" id="tab-iaps" role="tabpanel" aria-labelledby="nav-iaps-tab">
+               <h1>IAPS Task</h1>
+                  <form action="/chooseTask/send/iaps" method="POST">
+                    <div class="form-group">
+                      <p class="lead" for="task">Select a task</p>
+                      <select style="width:100%" class="selectpicker" id="task" data-live-search="true" name="task">
+                       {% for task in iaps_tasks %}
+                        <option value={{ task.id }}>{{ task.name }}</option>
+                       {% endfor %}
+                      </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-md">Choose selected task</button>
+            </form>
+            </div>
+        </div>
+    </div>
+</div>
+ </div>
+ <script>
+      if($("#task").prop('selectedIndex') === -1)
+        $(":submit").attr("disabled", true);
+      $( ".selectpicker" ).change(function() {
+      $(":submit").attr("disabled", false);      });
+</script>
+{% endblock %}

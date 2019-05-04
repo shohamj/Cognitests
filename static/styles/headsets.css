@@ -1,0 +1,201 @@
+/**************************top-left*******************************/
+.circle {
+    border-radius: 50%;
+    line-height: 215%;
+    text-align: center;
+    color: #ffffff;
+    background: #7b7b80;
+    display: block;
+    position: absolute;
+}
+
+.insight-sensor {
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.epocplus-sensor {
+    display: block;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+#picture {
+    background: url('../img/img1234.png') no-repeat center;
+    background-size: auto 100%;
+    width: 100%;
+    height: 100%;
+}
+
+#TwoHead {
+    background: url('../img/insightV2/head.png') no-repeat center;
+    background-size: auto 100%;
+    width: 100%;
+    height: 100%;
+}
+
+/*#main {
+     width: 36.5vw;
+     height: 36.5vw;
+     border: 1px solid transparent;
+}
+
+/*spec headsets*/
+#spec_headset {
+    height: 50%;
+    width: 24%;
+    border: 1px solid rgb(0, 0, 0);
+    margin-top: 0.2vw;
+}
+
+#left {
+    height: 100%;
+    width: 100%;
+    background: rgb(232, 232, 233);
+}
+
+#right {
+    background-size: 100% 100%;
+    height: 100%;
+    width: 100%;
+}
+
+#left_top {
+    width: 100%;
+    height: 45%;
+    border-bottom: 10px solid #ffffff;
+    padding-bottom: 10px;
+    padding-top: 10px;
+}
+
+#left_mid {
+    width: 100%;
+    height: 10%;
+}
+
+#left_bottom {
+    width: 100%;
+    height: 45%;
+    border-top: 10px solid #ffffff;
+}
+
+.chart {
+    height: 100%;
+    width: 100%;
+}
+
+.col-2 {
+    margin-top: 10px;
+    margin-right: -20px;
+}
+
+.row {
+    background: rgb(232, 232, 233);
+    margin: 0;
+}
+
+#loading {
+    margin: 0;
+}
+
+.modebar {
+    display: none !important;
+}
+
+.fit-image {
+    width: 100%;
+    object-fit: cover;
+}
+
+h5 {
+    padding-top: 5px;
+}
+
+/**************************bottom-left*******************************/
+#changeDimention {
+    height: 10vh;
+    width: 5vw;
+    position: absolute;
+    z-index: 1;
+    cursor: pointer;
+    top: 61.3vh;
+    bottom: 20vh;
+    margin-top: 0.1vh;
+    margin-bottom: 0.1vh;
+    margin-left: 0.1vw;
+    margin-right: 0.1vw;
+    background-color: rgba(255, 0, 90, 0);
+    text-align: center;
+    box-shadow: 0.2px 0.2px 1px 1px rgb(160, 160, 216);
+}
+
+#changeDimention:hover {
+    background-color: rgba(88, 88, 184, 0.5);
+}
+
+.circletwo {
+    height: 2vw;
+    width: 2vw;
+    border-radius: 5vw;
+    border: solid black;
+    position: absolute;
+    font-size: 0.8vw;
+    text-align: center;
+    color: #ffffff;
+    background: rgba(124, 124, 132, 0);
+}
+
+#leftcol {
+    border: 4px solid white;
+    border-left: 8px solid white;
+    background: #4d90fe;
+    background: rgb(232, 232, 233);
+    float: left;
+    width: 35%;
+    height: 99.5%;
+}
+
+#rightcol {
+    border: 4px solid white;
+    border-right: 8px solid white;
+    background: #fe441e;
+    background: rgb(232, 232, 233);
+    float: right;
+    width: 65%;
+    height: 99.5%;
+}
+
+html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+}
+
+p {
+    font-size: 3vmin;
+}
+
+p img {
+    height: 1em;
+    width: auto;
+}
+
+p span {
+    height: 1em;
+    width: auto;
+}
+
+body > :not(.pace), body:before, body:after {
+    -webkit-transition: opacity .4s ease-in-out;
+    -moz-transition: opacity .4s ease-in-out;
+    -o-transition: opacity .4s ease-in-out;
+    -ms-transition: opacity .4s ease-in-out;
+    transition: opacity .4s ease-in-out
+}
+
+body:not(.pace-done) > :not(.pace), body:not(.pace-done):before, body:not(.pace-done):after {
+    opacity: 0
+}

@@ -1,0 +1,20 @@
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap.min.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static',filename='img/brainBlue.png') }}" type="image/x-icon">
+
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="{{ url_for('static',filename='js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+    <script>
+        function onClose(){
+            alert("Closed")
+        }
+        document.addEventListener('evClosed', onClose);
+    </script>
+
+<section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">Cortex has exited</h1>
+            <p class="lead text-muted">You can close this tab now.</p>
+        </div>
+      </section>

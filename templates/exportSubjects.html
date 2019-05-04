@@ -1,0 +1,64 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "/";
+</script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+<script>
+var socket = io.connect(location.protocol + '//' + location.host);
+function openFile(path)
+{
+    socket.emit('openPath', path);
+    return false;
+}
+socket.on('exportSubjectsDone', function(data)
+{
+     $("#btn").removeClass('disabled');
+     document.getElementById("btn").innerHTML = "Export";
+     $("#msg").html("Your export file could be found at " + '<a href="#" onclick="return openFile(\'' + data.path.replace(/\\/g,"\\\\") + '\')" class="alert-link">'+data.path+'</a>')
+     $('#alert').show();
+
+})
+function exportSubjects ()
+{
+    $('#alert').hide();
+    var indices = []
+    $("#subjects option:selected").each(function () {
+    var $this = $(this);
+    if ($this.length) {
+        var index = $this.attr('subjectid');
+        indices.push(index);
+    }});
+    let file = document.getElementById("name").value;
+    $("#btn").addClass('disabled');
+    document.getElementById("btn").innerHTML = "Generating export file";
+    socket.emit("exportSubjects",indices,file)
+}
+</script>
+{% endblock %}
+{% block body %}
+
+  <div class="jumbotron text-center">
+  <h1>Export subjects</h1>
+    <div class="form-group">
+      <p class="lead" for="subjects">Select subjects to export</p>
+      <select style="width:100%" class="selectpicker text-center" style="text-align:center" data-width="100%" id="subjects" multiple data-live-search="true" name="subjects">
+       {% for subject in subjects %}
+        <option style="text-align:center" subjectid={{ subject.id }}>Name: {{ subject.name }}, ID number: {{ subject.serial }}</option>
+       {% endfor %}
+      </select>
+    </div>
+    <input type="text" id="name" class="form-control" style="text-align:center" placeholder="Choose export file name">
+    <br>
+    <button id="btn" class="btn btn-primary btn-md" onclick="exportSubjects()">Export</button>
+  </div>
+ <div id="alert" class="alert alert-success alert-dismissible collapse" role="alert" style="margin-top:2vw">
+        <h4 class="alert-heading">Export done!</h4>
+        <p id="msg"></p>
+        <button class="close" onclick="$('#alert').hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+ </div>
+{% endblock %}

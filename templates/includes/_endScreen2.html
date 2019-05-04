@@ -1,0 +1,47 @@
+<style>
+   #end{
+   height:100%;
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   text-align: center;
+   font-family: 'Open Sans', Helvetica, sans-serif;
+   font-weight: 700;
+   font-size: 6vw;
+   font-size: calc( 100vw ) / 12;
+   }
+   .center-inner {
+   display: table;
+   margin: 0 auto;
+   width:100%;
+   }
+</style>
+<div id="end" style="display:none" class="fullscreen">
+   <div class="center-inner">
+      <div>Task is over</div>
+      <div class="row">
+         <div class="col-4"></div>
+         <div class="col-2">
+            <button class="btn btn-block btn-primary" onclick="task_analysis()">Task's Visualization</button>
+         </div>
+         <div class="col-2">
+            <button class="btn btn-block btn-secondary" onclick="home_page()">Main Page</button>
+         </div>
+         <div class="col-4"></div>
+      </div>
+   </div>
+</div>
+<script>
+   function task_analysis(){
+             closeFullScreen();
+             setTimeout(function(){
+             document.location.href = '/taskVisualization/taskover/{{type}}';
+            }, 100);
+   };
+   function home_page(){
+             closeFullScreen();
+             setTimeout(function(){
+             document.location.href = '/';
+            }, 100);
+   };
+</script>

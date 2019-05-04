@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "#";
+</script>
+{% endblock %}
+{% block body %}
+  <div id="test" class="jumbotron text-center">
+    <h1>Welcome </h1>
+    <p class="lead">Login using your existing account or use anonymous authentication.</p>
+    <button onclick="openFullscreen();"  class="btn btn-primary btn-lg">Anonymous Login</button>
+  </div>
+  <script>
+var elem = document.getElementById("test");
+alert(elem);
+function openFullscreen() {
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen();
+  } else if (elem.mozRequestFullScreen) { /* Firefox */
+    elem.mozRequestFullScreen();
+  } else if (elem.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+    elem.webkitRequestFullscreen();
+  } else if (elem.msRequestFullscreen) { /* IE/Edge */
+    elem.msRequestFullscreen();
+  }
+}
+</script>
+
+{% endblock %}

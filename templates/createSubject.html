@@ -1,0 +1,91 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+<script>
+    {% if inTask == '_' %}
+     document.getElementById("backBtn").href = "/chooseSubject";
+    {% else%}
+     document.getElementById("backBtn").href = "/";
+    {% endif %}
+</script>
+{% block abovebody %}
+{% endblock %}
+{% endblock %}
+{% block body %}
+<form id="form" method="POST" action="/createSubject/send/{{inTask}}">
+{% block upperform %}
+{% endblock %}
+  <div class="form-group">
+    <label for="name">Subject Name:</label>
+    <input type="text" name="name" id="name" class="form-control" placeholder="Enter Subject Name">
+  </div>
+  <div class="form-group">
+    <label for="subjectid">Subject ID:</label>
+    <input type="text" name="serial" id="serial" class="form-control" placeholder="Enter Subject ID">
+  </div>
+    <div class="form-group">
+     <label style="display:block;" for="task">Group</label>
+    <select style="width:100%" class="selectpicker" data-live-search="true" id="group_id" name="group_id" multiple="multiple" title="Select a group">
+       {% for group in groups %}
+        <option value={{ group.id }}>{{ group.name }}</option>
+       {% endfor %}
+      </select>
+  </div>
+  <div class="form-group">
+    <label for="age">Subject Age (0-150):</label>
+    <input class="form-control" type="number" name="age" id="age" min="0" max="150">
+  </div>
+  <div class="form-group">
+    <label for="gender">Gender:</label>
+     <br/>
+    <label class="radio-inline"><input type="radio" name="gender" id="male" value="male" checked>Male </label>
+    <label class="radio-inline"><input type="radio" name="gender" id="female" value="female">Female</label>
+  </div>
+  <div class="form-group">
+    <label for="dom_hand">Dominated Hand:</label>
+    <br/>
+    <label class="radio-inline"><input type="radio" name="dom_hand" id=right value="right" checked>Right</label>
+    <label class="radio-inline"><input type="radio" name="dom_hand" id="left" value="left">Left </label>
+  </div>
+  <div class="form-group">
+    <label for="education">Education (In years):</label>
+    <input class="form-control" type="number" name="education" id="education" min="0">
+  </div>
+  <button id="submitBtn" type="submit" class="btn btn-primary">Add subject</button>
+   {% block bottomform %}
+    {% endblock %}
+</form>
+<script>
+function clearAll(){
+     $('.form-control').val("");
+     $('#group_id').val([]);
+     $('#group_id').change();
+     try {
+        $('#subject').prop('selectedIndex',-1);
+        $('#subject').selectpicker("refresh");
+     }catch{}
+}
+$("#form").submit(function (e) {
+    e.preventDefault();
+    var formData = new FormData(this);
+    // showMSG("Adding new flower...","This message will disapear once the flower is added.")
+    console.log(formData);
+    $.ajax({
+        type: "POST",
+        url: $(this).attr('action'),
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function(){
+            clearAll();
+            showAlert("Successes!", "Subject created successfully");
+        },
+        error: function (e) {
+            // showError("Adding failed!", e)
+        }
+    });
+   });
+</script>
+{% endblock %}

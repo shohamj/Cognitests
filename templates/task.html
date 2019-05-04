@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/task.css') }}">
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/grid.css') }}">
+
+<script>
+     document.getElementById("backBtn").href = "#";
+</script>
+ <script src="{{ url_for('static',filename='js/task.js') }}"></script>
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+
+
+{% endblock %}
+{% block body %}
+  <div id="test" class="jumbotron text-center" style="margin:auto">
+    <h1>Task </h1>
+    <p class="lead">Click 'Open Task' to view the task in full screen.</p>
+    <div id="text" style="background:white;display:none; margin:auto">
+        <div id="ins_container" class="container">
+        {% include "includes/_instructions.html" %}
+        </div>
+        {% include "includes/_taskGrid.html" %}
+        {% include "includes/_endScreen2.html" %}
+        {% include "includes/_image.html" %}
+        {% include "includes/_IAPSWaitScreen.html" %}
+        {% include "includes/_IAPSEmotion.html" %}
+        {% include "includes/_IAPSKeyChoosing.html" %}
+        {% include "includes/_waitScreen2.html" %}
+    </div>
+    <button onclick="openFullScreen();"  class="btn btn-primary btn-lg">Open Task</button>
+    <button onclick="openDataWindow();"  class="btn btn-secondary btn-lg">Headset Details</button>
+    <button onclick="closeTask();" class="btn btn-danger btn-lg">Stop Task</button>
+  </div>
+ <script>
+      var ignoreMouseClicks = false;
+      var socket = io.connect(location.protocol + '//' + location.host);
+      socket.on('setContent', setGridContent);
+      socket.on('setIAPSContent', setIAPSContent);
+      socket.on('setInsVisibility', setInstructionVisibility);
+      socket.on('setWaitVisibility', setWaitScreenVisibility);
+      socket.on('setIAPSWaitVisibility', setIAPSWaitScreenVisibility);
+      socket.on('setIAPSEmotionVisibility', setIAPSEmotionVisibility);
+      socket.on('setIAPSKeyChoosingVisibility', setIAPSKeyChoosingVisibility);
+      socket.on('setEndVisibility', setEndScreenVisibility);
+      socket.on('setContentVisibility', setGridVisibility);
+      socket.on('setIAPSContentVisibility', setIAPSContentVisibility);
+      socket.on('setInstructionsData', setInstructionsData);
+
+      function spaceKey(e) {
+        if (e.which == 32 && isFullScreen == true)
+            socket.emit("evSpaceKeyPressed");
+        else if (e.which == Pleasant && isFullScreen == true)
+            socket.emit("evEmotionChosen","Pleasant");
+        else if (e.which == Unpleasant && isFullScreen == true)
+            socket.emit("evEmotionChosen","Unpleasant");
+        else if (e.which == Neutral && isFullScreen == true)
+            socket.emit("evEmotionChosen","Neutral");
+      }
+       $(document).on('keypress',spaceKey);
+       $(document).mousedown(function() {
+       if (isFullScreen==true && !ignoreMouseClicks)
+           socket.emit("evSpaceKeyPressed");
+       });
+      socket.emit("evTaskWindowLoaded");
+</script>
+
+{% endblock %}

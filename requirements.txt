@@ -1,0 +1,15 @@
+cefpython3==66.0
+Flask==1.0.2
+Flask-SocketIO==3.0.2
+Flask-SQLAlchemy==2.3.2
+influxdb==5.2.0
+PyInstaller
+pywin32-ctypes==0.2.0
+requests==2.20.0
+SQLAlchemy==1.2.14
+websocket-client-py3==0.15.0
+pywin32
+numpy
+xlsxwriter
+psutil
+pygame

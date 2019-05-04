@@ -1,0 +1,93 @@
+{% extends 'createSubject.html' %}
+
+{% block abovebody %}
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+
+<script>
+function deleteSubject() {
+    let select = document.getElementById("subject");
+    let selected_option = select.options[select.selectedIndex]
+    let id = selected_option.value;
+    $.post( "/deleteSubject", { subject: id} );
+    $("#subject option[value='" + id+ "']").remove();
+    $('#subject').prop('selectedIndex', -1);
+    $('.form-control').val("");
+    $('#subject').selectpicker("refresh");
+    clearAll();
+    showAlert("Successes!", "Subject deleted successfully");
+}
+      var socket = io.connect(location.protocol + '//' + location.host);
+      socket.on('changeSelectedSubjectData', displaySubjectData);
+      function displaySubjectData(data){
+          for (var property in data) {
+            if( data.hasOwnProperty(property) && property!="id") {
+                if (property !="gender" && property !="dom_hand"){
+                    console.log(data[property]);
+                    $("#"+property).val(data[property]);
+                    }
+                else
+                    document.getElementById(data[property]).checked=true;
+            }
+          }
+          $('#group_id').change();
+
+      }
+      function changeSelect(){
+          $('#submitBtn').prop('disabled', false);
+          $('#deleteBtn').prop('disabled', false);
+          let select = document.getElementById("subject");
+          let selected_subject_id = select.options[select.selectedIndex].getAttribute("value");
+          socket.emit("selectedSubjectChanged",  selected_subject_id);
+      }
+
+      window.onload = function(){
+        document.getElementById('submitBtn').innerHTML = "Update Subject";
+          $('#submitBtn').prop('disabled', true);
+          $('#deleteBtn').prop('disabled', true);
+        document.getElementById('form').action = "/editSubject/send/";}
+</script>
+{% endblock %}
+
+
+{% block upperform %}
+  <div class="form-group">
+        <label style="display:block;" for="task">Choose subject to edit</label>
+      <select style="width:100%" class="selectpicker" id="subject" data-live-search="true" name="subject" onchange="changeSelect()">
+       <option hidden disabled selected value> -- Select a subject -- </option>
+       {% for subject in subjects %}
+        <option value={{ subject.id }}>{{ subject.name }}, {{ subject.serial }}</option>
+       {% endfor %}
+      </select>
+    </div>
+{% endblock %}
+
+ {% block bottomform %}
+<button type="button" id="deleteBtn" class="btn btn-danger" data-toggle="modal" data-target="#confirmModal">
+  Delete Subject
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete subject?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Changes cannot be reverted!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="deleteSubject()" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-danger"  data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+ {% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'layout.html' %}
+{% block head %}
+<script>
+     document.getElementById("backBtn").href = "/";
+</script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+<script>
+var socket = io.connect(location.protocol + '//' + location.host);
+function openFile(path)
+{
+    socket.emit('openPath', path);
+    return false;
+}
+socket.on('exportSettingsDone', function(data)
+{
+     $("#btn").removeClass('disabled');
+     document.getElementById("btn").innerHTML = "Export";
+     $("#msg").html("Your export file could be found at " + '<a href="#" onclick="return openFile(\'' + data.path.replace(/\\/g,"\\\\") + '\')" class="alert-link">'+data.path+'</a>')
+     $('#alert').show();
+
+
+})
+function exportSettings ()
+{
+    $('#alert').hide();
+    var indices = []
+    $("#settings option:selected").each(function () {
+    var $this = $(this);
+    if ($this.length) {
+        var id = $this.attr('task_settingsid');
+        var type = $this.attr('task_type');
+        indices.push({id:id, type:type});
+    }});
+    let file = document.getElementById("name").value;
+    $("#btn").addClass('disabled');
+    document.getElementById("btn").innerHTML = "Generating export file";
+    socket.emit("exportSettings",indices,file)
+}
+</script>
+{% endblock %}
+{% block body %}
+
+  <div class="jumbotron text-center">
+  <h1>Export settings</h1>
+    <div class="form-group">
+      <p class="lead" for="settings">Select settings to export</p>
+      <select style="width:100%" class="selectpicker text-center" style="text-align:center" data-width="100%" id="settings" multiple data-live-search="true" name="settings">
+       {% for task_settings in nback_settings %}
+        <option style="text-align:center" task_type="nback" task_settingsid={{ task_settings.id }}>Type: N-Back, Name: {{ task_settings.name }}</option>
+       {% endfor %}
+       {% for task_settings in eyes_settings %}
+        <option style="text-align:center" task_type="eyes" task_settingsid={{ task_settings.id }}>Type: Eyes, Name: {{ task_settings.name }} </option>
+       {% endfor %}
+       {% for task_settings in iaps_settings %}
+        <option style="text-align:center" task_type="iaps" task_settingsid={{ task_settings.id }}>Type: IAPS, Name: {{ task_settings.name }} </option>
+       {% endfor %}
+      </select>
+    </div>
+    <input type="text" id="name" class="form-control" style="text-align:center" placeholder="Choose export file name">
+    <br>
+    <button id="btn" class="btn btn-primary btn-md" onclick="exportSettings()">Export</button>
+  </div>
+  <div id="alert" class="alert alert-success alert-dismissible collapse" role="alert" style="margin-top:2vw">
+        <h4 class="alert-heading">Export done!</h4>
+        <p id="msg"></p>
+        <button class="close" onclick="$('#alert').hide()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'createTaskV2.html' %}
+
+{% block abovebody %}
+<script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+<script src="{{ url_for('static',filename='js/bootstrap-select.min.js') }}"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap-select.min.css') }}">
+
+<script>
+      var socket = io.connect(location.protocol + '//' + location.host);
+      socket.on('changeSelectedTask', displayTaskData);
+      function displayTaskData(data){
+           for (var property in data) {
+            if( data.hasOwnProperty(property) && property!="id" && property!="type") {
+                    console.log(typeof property);
+                    console.log(property);
+                    console.log(data[property]);
+                    if (property == "rounds" &&  data['type'] === 'iaps'){
+                        $(".btn-remove").closest('.form-group').remove();
+                        data[property].split(" ").forEach(function(i, idx, array) {
+                            $(".btn-add").parent().siblings('input').val(parseFloat(i));
+                            if (idx !== array.length - 1)
+                                $(".btn-add").click()
+
+                        });
+                        }
+                    else if (property == "open_sound" || property == "close_sound"){
+                        if(data[property]){
+                        document.getElementById("eyes_" + property + "_preview").src = data[property];
+                        document.getElementById("eyes_" + property + "_label").innerHTML  = data[property].substring(data[property].indexOf("_")+1);
+                        }
+                        else{
+                           document.getElementById("eyes_" + property + "_label").innerHTML  = "Choose a sound...";
+                           document.getElementById("eyes_" + property + "_preview").src = "";
+                        }
+                    }
+                    else
+                        document.getElementById(data.type + "_" + property).value = data[property];
+                    }
+                     $('#' + data.type+'_instructions').change();
+            }
+          e = $.Event('keyup');
+          e.keyCode= 13; // enter
+          $("#nback_words").trigger(e);
+          $("input").trigger(e);
+      }
+      function changeSelect(type){
+          $('#' + type +'_submitBtn').prop('disabled', false);
+          let select = document.getElementById(type + "Task");
+          let selected_task_id = select.options[select.selectedIndex].getAttribute("taskid");
+          socket.emit("selectedTaskChanged",  selected_task_id, type);
+      }
+
+      window.onload = function(){
+        document.getElementById('nback_submitBtn').innerHTML = "Update Task";
+        $('#nback_submitBtn').prop('disabled', true);
+        document.getElementById('eyes_submitBtn').innerHTML = "Update Task";
+        $('#eyes_submitBtn').prop('disabled', true);
+        document.getElementById('iaps_submitBtn').innerHTML = "Update Task";
+        $('#iaps_submitBtn').prop('disabled', true);
+
+
+        document.getElementById('nbackForm').action = "/editTask/send/nback";
+        document.getElementById('eyesForm').action = "/editTask/send/eyes";
+        document.getElementById('iapsForm').action = "/editTask/send/iaps";
+        }
+</script>
+{% endblock %}
+
+
+{% block uppernbackform %}
+  <div class="form-group">
+        <label style="display:block;" for="task">Choose task to edit</label>
+      <select style="width:100%" class="selectpicker" id="nbackTask" data-live-search="true" name="task" onchange="changeSelect('nback')">
+       <option hidden disabled selected value> -- Select a task -- </option>
+       {% for task in nbackTasks %}
+        <option value={{ task.id }} taskid={{ task.id }}>{{ task.name }}</option>
+       {% endfor %}
+      </select>
+    </div>
+{% endblock %}
+
+ {% block lowernbackform %}
+<button type="button" id="deleteNbackBtn" class="btn btn-danger" data-toggle="modal" data-target="#confirmModalNback">
+  Delete Task
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModalNback" tabindex="-1" role="dialog" aria-labelledby="confirmModalNbackLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete N-Back task?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Changes cannot be reverted!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="delete_nback()" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-danger"  data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+function delete_nback() {
+    $.ajax({
+        type: "POST",
+        url: "/deleteTask/nback",
+        data: {task:$("#nbackTask").val()},
+        success: function(){
+            $("#nbackTask option[value='" + $("#nbackTask").val() + "']").remove();
+            $('#nbackTask').prop('selectedIndex', -1);
+            $('#nbackTask').selectpicker("refresh");
+            clearAll_Nback();
+            showAlert("Successes!", "N-Back task deleted successfully");
+        },
+        error: function (e) {
+            // showError("Adding failed!", e)
+        }
+    });
+   }
+</script>
+
+ {% endblock %}
+{% block uppereyesform  %}
+  <div class="form-group">
+        <label style="display:block;" for="task">Choose task to edit</label>
+      <select style="width:100%" class="selectpicker" id="eyesTask" data-live-search="true" name="task" onchange="changeSelect('eyes')">
+       <option hidden disabled selected value> -- Select a task -- </option>
+       {% for task in eyesTasks %}
+        <option value={{ task.id }} taskid={{ task.id }}>{{ task.name }}</option>
+       {% endfor %}
+      </select>
+    </div>
+{% endblock %}
+ {% block lowereyesform %}
+<button type="button" id="deleteEyesBtn" class="btn btn-danger" data-toggle="modal" data-target="#confirmModalEyes">
+  Delete Task
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModalEyes" tabindex="-1" role="dialog" aria-labelledby="confirmModalEyesLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete Eyes task?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Changes cannot be reverted!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="delete_eyes()" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-danger"  data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function delete_eyes() {
+    $.ajax({
+        type: "POST",
+        url: "/deleteTask/eyes",
+        data: {task:$("#eyesTask").val()},
+        success: function(){
+            $("#eyesTask option[value='" + $("#eyesTask").val() + "']").remove();
+            $('#eyesTask').prop('selectedIndex', -1);
+            $('#eyesTask').selectpicker("refresh");
+            clearAll_Eyes();
+            showAlert("Successes!", "Eyes task deleted successfully");
+        },
+        error: function (e) {
+            // showError("Adding failed!", e)
+        }
+    });
+   }
+</script>
+ {% endblock %}
+{% block upperiapsform  %}
+  <div class="form-group">
+        <label style="display:block;" for="task">Choose task to edit</label>
+      <select style="width:100%" class="selectpicker" id="iapsTask" data-live-search="true" name="task" onchange="changeSelect('iaps')">
+       <option hidden disabled selected value> -- Select a task -- </option>
+       {% for task in iapsTasks %}
+        <option value={{ task.id }} taskid={{ task.id }}>{{ task.name }}</option>
+       {% endfor %}
+      </select>
+    </div>
+{% endblock %}
+ {% block loweriapsform %}
+<button type="button" id="deleteIAPSBtn" class="btn btn-danger" data-toggle="modal" data-target="#confirmModalIAPS">
+  Delete Task
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="confirmModalIAPS" tabindex="-1" role="dialog" aria-labelledby="confirmModalIAPSLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete IAPS task?</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Changes cannot be reverted!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" onclick="delete_iaps()" data-dismiss="modal">Yes</button>
+        <button type="button" class="btn btn-danger"  data-dismiss="modal">No</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function delete_iaps() {
+    $.ajax({
+        type: "POST",
+        url: "/deleteTask/iaps",
+        data: {task:$("#iapsTask").val()},
+        success: function(){
+            $("#iapsTask option[value='" + $("#iapsTask").val() + "']").remove();
+            $('#iapsTask').prop('selectedIndex', -1);
+            $('#iapsTask').selectpicker("refresh");
+            clearAll_IAPS();
+            showAlert("Successes!", "N-Back task deleted successfully");
+        },
+        error: function (e) {
+            // showError("Adding failed!", e)
+        }
+    });
+   }
+</script>
+ {% endblock %}

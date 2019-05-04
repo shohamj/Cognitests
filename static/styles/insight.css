@@ -1,0 +1,93 @@
+.dot {
+    width: 2vw;
+    height: 2vw;
+    background-color: #bbb;
+    border-radius: 50%;
+    border: 2px solid;
+    display: inline-block;
+    position: absolute;
+}
+
+.insight {
+    position: relative;
+    width: 20vw;
+    height: 20vw;
+    margin: 8%;
+    margin-left: -20%;
+}
+
+.insight img {
+    position: static;
+    width: 20vw;
+    height: 20vw;
+}
+
+#contacts {
+    position: relative;
+    margin-top: -20vw;
+}
+
+.insight #AF3 {
+    margin-top: 14%;
+    margin-left: 40%;
+}
+
+.insight #AF4 {
+    margin-top: 25%;
+    margin-left: 70%;
+}
+
+.insight #Pz {
+    margin-top: 75%;
+    margin-left: 45%;
+}
+
+.insight #T7 {
+    margin-top: 63%;
+    margin-left: 15%;
+}
+
+.insight #T8 {
+    margin-top: 65%;
+    margin-left: 73%;
+}
+
+#wrap {
+    width: 70vw;
+    height: 70vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#insightWrap {
+    display: block;
+    width: 35vw;
+    height: 35vw;
+    float: left;
+}
+
+#detailsWrap {
+    display: block;
+    width: 20vw;
+    height: 20vw;
+    float: right;
+}
+
+#insightImg {
+    margin-left: -20%;
+    width: 28.6092716vw;
+    height: 20vw;
+}
+
+#battery {
+    margin-top: -4%;
+    width: 75px;
+    height: 45px;
+}
+
+#signal {
+    margin-top: -10%;
+    margin-left: -5%;
+    width: 75px;
+    height: 45px;
+}

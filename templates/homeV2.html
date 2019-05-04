@@ -1,0 +1,47 @@
+{% extends 'layout.html' %}
+{% block head %}
+ <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/dropdownhover.css') }}">
+
+<script>
+     document.getElementById("backBtn").href = "#";
+     document.getElementById("backBtn").style.display = 'none';
+</script>
+{% endblock %}
+{% block body %}
+  <div class="jumbotron text-center">
+    <h1>Welcome</h1>
+    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, cum debitis delectus dolore eligendi excepturi explicabo harum ipsa ipsum, itaque laborum molestiae nihil nulla odio possimus quos repellendus sint veritatis?   </p>
+    <div class="btn-group">
+      <button style="min-width:120px" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Tasks
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="/headsets">Start a task</a>
+        <a class="dropdown-item" href="/createTask/">Create new task</a>
+        <a class="dropdown-item" href="/editTask/">Edit task</a>
+        <a class="dropdown-item" href="taskVisualization">Tasks visualization</a>
+        <a class="dropdown-item" href="/exportTasksAnalysis">Tasks analysis</a>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/exportTasksData">Export tasks data</a>
+        <a class="dropdown-item" href="/importTasksData">Import tasks data</a>
+        <a class="dropdown-item" href="/exportSettings">Export tasks settings</a>
+        <a class="dropdown-item" href="/importSettings">Import tasks settings</a>
+      </div>
+    </div>
+    <div class="btn-group">
+      <button style="min-width:120px" type="button" class="btn btn-secondary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Subjects
+      </button>
+      <div class="dropdown-menu">
+        <a class="dropdown-item" href="/createSubject">Add new subject</a>
+        <a class="dropdown-item" href="/editSubject">Edit subject</a>
+        <a class="dropdown-item" href="/createGroup">Add new group</a>
+        <a class="dropdown-item" href="/editGroup">Edit group</a>
+        <!--<a class="dropdown-item" href="#">Subjects details</a>-->
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="/exportSubjects">Export subjects</a>
+        <a class="dropdown-item" href="/importSubjects">Import subjects</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
