@@ -1,2 +1,2 @@
 # Cognitests
-Cognitive neuropsychology tests creator
+Cognitive neuropsychology tests generator
