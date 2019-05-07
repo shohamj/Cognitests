@@ -4,7 +4,7 @@ Cognitests is an application for creating, running and analyzing cognitive neuro
 ## Table of Contents  
 - [Cognitests](#cognitests)
   * [Installation](#instInstallationall)
-  * [## Compilation](### Compilation)
+  * [Compilation](### Compilation)
   * [Docs](#docs)
   
 ## Installation
