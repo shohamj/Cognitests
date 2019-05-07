@@ -1,5 +1,5 @@
 # Cognitests
-Cognitests is an application for creating, running and analyzing cognitive neuropsychology tests.
+Cognitests is a tool for creating, running and analyzing cognitive neuropsychology tests.
 
 ## Table of Contents  
 - [Cognitests](#cognitests)
