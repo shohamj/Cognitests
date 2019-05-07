@@ -6,6 +6,7 @@ var yellowMat;
 var greenMat;
 
 function showInsightDevInfo(data) {
+    console.log(data);
     $('#AF3two').css('background-color', numberToColor(data["AF3"]));
     $('#AF4two').css('background-color', numberToColor(data["AF4"]));
     $('#T7two').css('background-color', numberToColor(data["T7"]));
@@ -30,7 +31,7 @@ function showInsightDevInfo(data) {
     checkQuality(array, data["Battery"]);
 }
 function showEpocDevInfo(data) {
-
+    console.log(data);
     $('#AF3two').css('background-color', numberToColor(data["AF3"]));
     $('#AF4two').css('background-color', numberToColor(data["AF4"]));
     $('#T7two').css('background-color', numberToColor(data["T7"]));

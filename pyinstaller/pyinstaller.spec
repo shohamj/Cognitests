@@ -41,7 +41,7 @@ if SECRET_CIPHER:
 else:
     cipher_obj = None
 
-a = Analysis(['../app.py'],
+a = Analysis(['../run.py'],
              hiddenimports=['engineio.async_drivers.threading'],
              pathex=['E:\\Dropbox\\Project\\Emotiv'],
              datas=[('../templates', 'templates'), ('../static', 'static'), ('../EmotivCortexService', 'EmotivCortexService'),('../influxdb', 'influxdb'),('../DBS', 'DBS'),],

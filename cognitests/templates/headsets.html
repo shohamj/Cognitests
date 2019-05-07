@@ -1,7 +1,18 @@
 {% extends 'layout.html' %}
 {% block head %}
-<script src="{{ url_for('static',filename='js/jquery.miranda.js') }}" xmlns="http://www.w3.org/1999/html"></script>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/switches.css') }}">
+<script src="{{ url_for('static',filename='js/jquery.miranda.js') }}"></script>
 <script>
+$( document ).ready(function() {
+    $.get( "/get_test_mode", function (state){
+        $('#test_mode').prop('checked', state == 'true');
+    });
+});
+
+function changeTestMode(checked) {
+    $.post( "/set_test_mode", { state: checked } );
+    updateHeadsets();
+}
     String.prototype.capitalize = function() {
         return this.charAt(0).toUpperCase() + this.slice(1);
 }
@@ -18,15 +29,25 @@
         <div class="container">
             <h1 class="jumbotron-heading">Available Headsets</h1>
             <p class="lead text-muted" style="margin-bottom: 5px">Before we begin, first choose an headset from the list below.</p>
-            <button onclick="updateHeadsets()" style="margin-bottom: 5px" class="btn btn-primary navbar-btn">
+            <div>
+            <button onclick="updateHeadsets()" style="margin-right: -161px" class="btn btn-primary navbar-btn">
                 <i class="fas fa-sync"></i> Refresh
             </button>
-<div class="d-flex justify-content-center">
-  <div id="spinner" class="spinner-border" role="status" style="margin-top:2vw;width: 6vw; height: 6vw;">
+            <p id="toggle" class="lead text-muted" style="position: relative;float:right">
+                Test mode: &nbsp;
+                <label class="switch">
+                                <input id="test_mode" type="checkbox" class="success" onchange="changeTestMode(this.checked)">
+                                    <span class="slider round"></span>
+                </label>
+            </p>
+            </div>
+    <div class="d-flex justify-content-center">
+  <div id="spinner" class="spinner-border" role="status" style="margin-top:2vw;width: 6vw; height: 6vw;margin-right: -160px;">
     <span class="sr-only">Loading...</span>
   </div>
 </div>
-<div class="list-group">
+<br>
+<div class="list-group" style="display:block">
 <div id="emptyMSG" class="alert alert-danger" style="display: block;">
   <strong>No Available Headsets!</strong> Please connect a device and click the refresh button.
 </div>

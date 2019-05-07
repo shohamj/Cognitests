@@ -10,7 +10,8 @@ from cognitests.helpers import sendContactQuality, sendBandPower, arrayToString,
 from cognitests.models import Subject, PartOfGroup, Group, NbackSettings, EyesSettings, IAPSSettings, Instructions, Task
 from cognitests.modules import influxdbAPI as influx, CEFPython as CEFPython
 from cognitests.modules.cortex_client import Streams
-from cognitests.modules.cortex_client import set_send, subscribe, queryHeadsets, get_last_headset
+from cognitests.modules.cortex_client import set_send, subscribe, queryHeadsets, get_last_headset, set_test_mode, \
+    get_test_mode
 
 isShutdown = False
 
@@ -411,13 +412,12 @@ def addInstructions():
 
 @app.route('/headsets')
 def headsets():
-    global STOP_DEV, STOP_POW, STOP_FAC
-    try:
-        STOP_DEV.set()
-        STOP_POW.set()
-        STOP_FAC.set()
-    except:
-        pass
+    if cognitests.STOP_DEV:
+        cognitests.STOP_DEV.set()
+    if cognitests.STOP_POW:
+        cognitests.STOP_POW.set()
+    if cognitests.STOP_FAC:
+        cognitests.STOP_FAC.set()
     return render_template("headsets.html")
 
 
@@ -552,3 +552,19 @@ def fullScreenOff():
     # size = wxCEF.GetSize()
     # wxCEF.SetSize(0, 0)
     # wxCEF.SetSize(size)
+
+
+@app.route('/set_test_mode', methods=['POST'])
+def set_mode():
+    if request.form['state'] == 'true':
+        set_test_mode(True)
+    else:
+        set_test_mode(False)
+    return "mode is set"
+
+
+@app.route('/get_test_mode', methods=['GET'])
+def get_mode():
+    if get_test_mode():
+        return "true"
+    return "false"

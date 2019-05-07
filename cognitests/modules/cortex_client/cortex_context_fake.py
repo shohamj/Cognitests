@@ -9,13 +9,13 @@ waves = ["alpha", "betaH", "betaL", "gamma", "theta"]
 
 
 def queryHeadsets(headset_id: str = None):
-    if headset_id == "insight-VERYFAKE":
-        return [{"id": "insight-VERYFAKE", "sensors": insight}]
-    if headset_id == "epocplus-ULTRAFAKE":
-        return [{"id": "epocplus-ULTRAFAKE", "sensors": epoc}]
+    if headset_id == "insight-Test_Mode":
+        return [{"id": "insight-Test_Mode", "sensors": insight}]
+    if headset_id == "epocplus-Test_Mode":
+        return [{"id": "epocplus-Test_Mode", "sensors": epoc}]
     if not headset_id:
-        return [{"id": "insight-VERYFAKE", "sensors": insight},
-                {"id": "epocplus-ULTRAFAKE", "sensors": epoc}]
+        return [{"id": "insight-Test_Mode", "sensors": insight},
+                {"id": "epocplus-Test_Mode", "sensors": epoc}]
 
 
 def subscribe(stream: str, headset_id: str = None):
@@ -33,7 +33,7 @@ def subscribe(stream: str, headset_id: str = None):
 
 def subscribe_listener(stream, headset_id, stop_event):
     import random
-    if headset_id == "epocplus-ULTRAFAKE":
+    if headset_id == "epocplus-Test_Mode":
         sensors = epoc
     else:
         sensors = insight
@@ -64,7 +64,7 @@ def get_last_headset():
 
 
 if __name__ == '__main__':
-    e1 = subscribe("pow", "epocplus-ULTRAFAKE")
+    e1 = subscribe("pow", "epocplus-Test_Mode")
     set_send("pow", print)
     threading.Event().wait()
     print(e1)

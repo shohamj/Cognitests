@@ -10,7 +10,7 @@
 {% block body %}
   <div class="jumbotron text-center">
     <h1>Welcome</h1>
-    <p class="lead">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Consectetur, cum debitis delectus dolore eligendi excepturi explicabo harum ipsa ipsum, itaque laborum molestiae nihil nulla odio possimus quos repellendus sint veritatis?   </p>
+    <p class="lead">Cognitests is an application for creating, running and analyzing cognitive neuropsychology tests.<br>The source code and more information can be found at the github page: <a href="#" onClick="OpenGithub()">https://github.com/shohamj/Cognitests</a></p>
     <div class="btn-group">
       <button style="min-width:120px" type="button" class="btn btn-primary btn-lg dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Tasks
@@ -44,4 +44,9 @@
       </div>
     </div>
   </div>
+  <script>
+  function OpenGithub(){
+    window.open("https://github.com/shohamj/Cognitests");
+  }
+</script>
 {% endblock %}
