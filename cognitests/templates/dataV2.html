@@ -1,0 +1,641 @@
+<html>
+
+<head>
+    <script>
+    paceOptions = {
+        ajax: false, // disabled
+        document: true, // disabled
+        eventLag: false, // disabled
+        }
+</script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/loading.css') }}">
+    <script data-pace-options='{ "ajax": false }' src="{{ url_for('static',filename='js/pace.min.js') }}"></script>
+    <script>
+    Pace.start()
+    </script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/bootstrap.min.css')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/headsets.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/graphPlaceHolder.css') }}">
+    <script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/insightv2.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/bootstrap.min.js') }}"></script>
+
+    <script>
+
+        var currentImageDimention = "2DButton";
+
+    </script>
+    <script>
+    function keepASquare(element_id,parent_id) {
+      let h = $("#" + parent_id).height();
+      let w = $("#" + parent_id).width();
+      console.log("Height: " + h + " Width: " + w);
+      if(h > w){
+           $("#" + element_id).height(w);
+           $("#" + element_id).width(w);
+           $("#" + element_id).css('margin-top',((h/2)-(w/2))+'px');
+           $("#" + element_id).css('margin-left','0px');
+
+          }
+      else{
+           $("#" + element_id).height(h);
+           $("#" + element_id).width(h);
+           $("#" + element_id).css('margin-left',((w/2)-(h/2))+'px');
+           $("#" + element_id).css('margin-top','0px');
+         }
+
+    }
+    function insightSensors(){
+         let s = $("#TwoHead").width();
+         $(".circletwo").height(0.08*s);
+         $(".circletwo").width(0.08*s);
+         $(".circletwo").css('font-size',(0.08/2)*s);
+         $(".circletwo").css('border-width',0.008*s);
+         $(".circletwo").css('line-height',(0.007)*s);
+         $("#AF3two").css('margin', 0.17*s + 'px 0 0 ' + 0.3*s +'px');
+         $("#AF4two").css('margin', 0.17*s + 'px 0 0 ' + 0.6*s +'px');
+         $("#Pztwo").css('margin', 0.75*s + 'px 0 0 ' + (0.5 - 0.04)*s +'px');
+         $("#T7two").css('margin', 0.6*s + 'px 0 0 ' + 0.185*s +'px');
+         $("#T8two").css('margin', 0.6*s + 'px 0 0 ' + 0.72*s +'px');
+    }
+    function allsensors() {
+        let s = $("#picture").width();
+         $(".circle").height(0.08*s);
+         $(".circle").width(0.08*s);
+         $(".circle").css('font-size',0.043*s);
+
+         $("#FP1").css('margin',0.075*s + 'px 0 0 ' +0.325*s+'px');
+         $("#FPz").css('margin',0.05*s + 'px 0 0 ' +0.46*s+'px');
+         $("#FP2").css('margin',0.075*s + 'px 0 0 ' +0.595*s+'px');
+
+         $("#AF7").css('margin',0.132*s + 'px 0 0 ' +0.207*s+'px');
+         $("#AF3").css('margin',0.167*s + 'px 0 0 ' +0.337*s+'px');
+         $("#AFz").css('margin',0.157*s + 'px 0 0 ' +0.46*s+'px');
+         $("#AF4").css('margin',0.167*s + 'px 0 0 ' +0.583*s+'px');
+         $("#AF8").css('margin',0.132*s + 'px 0 0 ' +0.713*s+'px');
+
+         $("#F9").css('margin',0.155*s + 'px 0 0 ' +0.05*s+'px');
+         $("#F7").css('margin',0.208*s + 'px 0 0 ' +0.122*s+'px');
+         $("#F5").css('margin',0.23*s + 'px 0 0 ' +0.205*s+'px');
+         $("#F3").css('margin',0.245*s + 'px 0 0 ' +0.29*s+'px');
+         $("#F1").css('margin',0.257*s + 'px 0 0 ' +0.374*s+'px');
+         $("#Fz").css('margin',0.263*s + 'px 0 0 ' +0.46*s+'px');
+         $("#F2").css('margin',0.257*s + 'px 0 0 ' +0.546*s+'px');
+         $("#F4").css('margin',0.245*s + 'px 0 0 ' +0.630*s+'px');
+         $("#F6").css('margin',0.23*s + 'px 0 0 ' +0.715*s+'px');
+         $("#F8").css('margin',0.208*s + 'px 0 0 ' +0.798*s+'px');
+         $("#F10").css('margin',0.155*s + 'px 0 0 ' +0.870*s+'px');
+
+         $("#FT9").css('margin',0.28*s + 'px 0 0 ' + (-0.017)*s+'px');
+         $("#FT7").css('margin',0.319*s + 'px 0 0 ' +0.07*s+'px');
+         $("#FC5").css('margin',0.334*s + 'px 0 0 ' +0.165*s+'px');
+         $("#FC3").css('margin',0.347*s + 'px 0 0 ' +0.262*s+'px');
+         $("#FC1").css('margin',0.356*s + 'px 0 0 ' +0.359*s+'px');
+         $("#FCz").css('margin',0.36*s + 'px 0 0 ' +0.46*s+'px');
+         $("#FC2").css('margin',0.356*s + 'px 0 0 ' +0.561*s+'px');
+         $("#FC4").css('margin',0.347*s + 'px 0 0 ' +0.658*s+'px');
+         $("#FC6").css('margin',0.334*s + 'px 0 0 ' +0.755*s+'px');
+         $("#FT8").css('margin',0.319*s + 'px 0 0 ' +0.850*s+'px');
+         $("#FT10").css('margin',0.28*s + 'px 0 0 ' + 0.937*s+'px');
+
+         $("#T7").css('margin',0.458*s + 'px 0 0 ' + 0.047*s+'px');
+         $("#C5").css('margin',0.458*s + 'px 0 0 ' + 0.156*s+'px');
+         $("#C3").css('margin',0.458*s + 'px 0 0 ' + 0.255*s+'px');
+         $("#C1").css('margin',0.458*s + 'px 0 0 ' + 0.354*s+'px');
+         $("#Cz").css('margin',0.458*s + 'px 0 0 ' + 0.46*s+'px');
+         $("#C2").css('margin',0.458*s + 'px 0 0 ' + 0.570*s+'px');
+         $("#C4").css('margin',0.458*s + 'px 0 0 ' + 0.665*s+'px');
+         $("#C6").css('margin',0.458*s + 'px 0 0 ' + 0.764*s+'px');
+         $("#T8").css('margin',0.458*s + 'px 0 0 ' + 0.873*s+'px');
+
+        $("#TP9").css('margin',0.636*s + 'px 0 0 ' + (-0.017)*s+'px');
+        $("#TP7").css('margin',0.597*s + 'px 0 0 ' +0.07*s+'px');
+        $("#CP5").css('margin',0.582*s + 'px 0 0 ' +0.165*s+'px');
+        $("#CP3").css('margin',0.569*s + 'px 0 0 ' +0.262*s+'px');
+        $("#CP1").css('margin',0.560*s + 'px 0 0 ' +0.359*s+'px');
+        $("#CPz").css('margin',0.556*s + 'px 0 0 ' +0.46*s+'px');
+        $("#CP2").css('margin',0.560*s + 'px 0 0 ' +0.561*s+'px');
+        $("#CP4").css('margin',0.569*s + 'px 0 0 ' +0.658*s+'px');
+        $("#CP6").css('margin',0.582*s + 'px 0 0 ' +0.755*s+'px');
+        $("#TP8").css('margin',0.597*s + 'px 0 0 ' +0.850*s+'px');
+        $("#TP10").css('margin',0.636*s + 'px 0 0 ' + 0.937*s+'px');
+
+        $("#P9").css('margin',0.761*s + 'px 0 0 ' +0.05*s+'px');
+        $("#P7").css('margin',0.708*s + 'px 0 0 ' +0.122*s+'px');
+        $("#P5").css('margin',0.686*s + 'px 0 0 ' +0.205*s+'px');
+        $("#P3").css('margin',0.671*s + 'px 0 0 ' +0.29*s+'px');
+        $("#P1").css('margin',0.659*s + 'px 0 0 ' +0.374*s+'px');
+        $("#Pz").css('margin',0.653*s + 'px 0 0 ' +0.46*s+'px');
+        $("#P2").css('margin',0.659*s + 'px 0 0 ' +0.546*s+'px');
+        $("#P4").css('margin',0.671*s + 'px 0 0 ' +0.630*s+'px');
+        $("#P6").css('margin',0.686*s + 'px 0 0 ' +0.715*s+'px');
+        $("#P8").css('margin',0.708*s + 'px 0 0 ' +0.798*s+'px');
+        $("#P10").css('margin',0.761*s + 'px 0 0 ' +0.870*s+'px');
+
+        $("#PO7").css('margin',0.784*s + 'px 0 0 ' +0.207*s+'px');
+        $("#PO3").css('margin',0.749*s + 'px 0 0 ' +0.337*s+'px');
+        $("#POz").css('margin',0.759*s + 'px 0 0 ' +0.46*s+'px');
+        $("#PO4").css('margin',0.749*s + 'px 0 0 ' +0.583*s+'px');
+        $("#PO8").css('margin',0.784*s + 'px 0 0 ' +0.713*s+'px');
+
+        $("#O1").css('margin',0.833*s + 'px 0 0 ' +0.325*s+'px');
+        $("#Oz").css('margin',0.858*s + 'px 0 0 ' +0.46*s+'px');
+        $("#O2").css('margin',0.833*s + 'px 0 0 ' +0.595*s+'px');
+
+        $("#PO9").css('margin',0.857*s + 'px 0 0 ' +0.148*s+'px');
+        $("#O9").css('margin',0.924*s + 'px 0 0 ' +0.285*s+'px');
+        $("#Iz").css('margin',0.955*s + 'px 0 0 ' +0.46*s+'px');
+        $("#O10").css('margin',0.924*s + 'px 0 0 ' +0.635*s+'px');
+        $("#PO10").css('margin',0.857*s + 'px 0 0 ' +0.772*s+'px');
+    }
+    function onResize()
+    {
+        console.log("onResize");
+        keepASquare("picture","left_top");
+        keepASquare("TwoHead","pills-tabContent");
+        keepASquare("insight-AF3","TwoHead");
+        keepASquare("insight-AF4","TwoHead");
+        keepASquare("insight-T7","TwoHead");
+        keepASquare("insight-T8","TwoHead");
+        keepASquare("insight-Pz","TwoHead");
+        allsensors();
+        insightSensors()
+    }
+    $(window).on('resize', function(){
+       onResize();
+    });
+    </script>
+
+</head>
+
+<body>
+     <div class="row" style="width:100%" >
+        <div id="leftcol">
+                    <div class="row" id="left_top" style="width:100%;text-align: center">
+                        <div id="picture">
+<span id="FP1" class="circle">FP1</span>
+                <span id="FPz" class="circle">FPz</span>
+                <span id="FP2" class="circle">FP2</span>
+
+                <span id="AF7" class="circle">AF7</span>
+                <span id="AF3" class="circle">AF3</span>
+                <span id="AFz" class="circle">AFz</span>
+                <span id="AF4" class="circle">AF4</span>
+                <span id="AF8" class="circle">AF8</span>
+
+                <span id="F9" class="circle">F9</span>
+                <span id="F7" class="circle">F7</span>
+                <span id="F5" class="circle">F5</span>
+                <span id="F3" class="circle">F3</span>
+                <span id="F1" class="circle">F1</span>
+                <span id="Fz" class="circle">Fz</span>
+                <span id="F2" class="circle">F2</span>
+                <span id="F4" class="circle">F4</span>
+                <span id="F6" class="circle">F6</span>
+                <span id="F8" class="circle">F8</span>
+                <span id="F10" class="circle">F10</span>
+
+                <span id="FT9" class="circle">FT9</span>
+                <span id="FT7" class="circle">FT7</span>
+                <span id="FC5" class="circle">FC5</span>
+                <span id="FC3" class="circle">FC3</span>
+                <span id="FC1" class="circle">FC1</span>
+                <span id="FCz" class="circle">FCz</span>
+                <span id="FC2" class="circle">FC2</span>
+                <span id="FC4" class="circle">FC4</span>
+                <span id="FC6" class="circle">FC6</span>
+                <span id="FT8" class="circle">FT8</span>
+                <span id="FT10" class="circle">FT10</span>
+
+                <span id="T7" class="circle">T7</span>
+                <span id="C5" class="circle">C5</span>
+                <span id="C3" class="circle">C3</span>
+                <span id="C1" class="circle">C1</span>
+                <span id="Cz" class="circle">Cz</span>
+                <span id="C2" class="circle">C2</span>
+                <span id="C4" class="circle">C4</span>
+                <span id="C6" class="circle">C6</span>
+                <span id="T8" class="circle">T8</span>
+
+                <span id="TP9" class="circle">TP9</span>
+                <span id="TP7" class="circle">TP7</span>
+                <span id="CP5" class="circle">CP5</span>
+                <span id="CP3" class="circle">CP3</span>
+                <span id="CP1" class="circle">CP1</span>
+                <span id="CPz" class="circle">CPz</span>
+                <span id="CP2" class="circle">CP2</span>
+                <span id="CP4" class="circle">CP4</span>
+                <span id="CP6" class="circle">CP6</span>
+                <span id="TP8" class="circle">TP8</span>
+                <span id="TP10" class="circle">TP10</span>
+
+                <span id="P9" class="circle">P9</span>
+                <span id="P7" class="circle">P7</span>
+                <span id="P5" class="circle">P5</span>
+                <span id="P3" class="circle">P3</span>
+                <span id="P1" class="circle">P1</span>
+                <span id="Pz" class="circle">Pz</span>
+                <span id="P2" class="circle">P2</span>
+                <span id="P4" class="circle">P4</span>
+                <span id="P6" class="circle">P6</span>
+                <span id="P8" class="circle">P8</span>
+                <span id="P10" class="circle">P10</span>
+
+                <span id="PO7" class="circle">PO7</span>
+                <span id="PO3" class="circle">PO3</span>
+                <span id="POz" class="circle">POz</span>
+                <span id="PO4" class="circle">PO4</span>
+                <span id="PO8" class="circle">PO8</span>
+
+                <span id="O1" class="circle">O1</span>
+                <span id="Oz" class="circle">Oz</span>
+                <span id="O2" class="circle">O2</span>
+
+                <span id="PO9" class="circle">PO9</span>
+                <span id="O9" class="circle">O9</span>
+                <span id="Iz" class="circle">Iz</span>
+                <span id="O10" class="circle">O10</span>
+                <span id="PO10" class="circle">PO10</span>
+                        </div>
+                    </div>
+                    <div class="row" id="left_mid" style="width:100%;">
+                        <div style="width:100%;">
+                        {% if showbtns %}
+                            <div class="row" style="height:50%;width:100%;">
+                                <div class="col-sm-6" align="center">
+                                    <p>Contact Quality: <span id="quality" style="height:100%;color: red;">0%</span></p>
+                                </div>
+                                <div class="col-sm-6" align="center">
+                                    <p style="height:100%;margin-bottom: 0">Battery:
+                                    <img id="battery" src='{{ url_for("static",filename="img/batteryundefined.png") }}'>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row" style="height:50%;width:100%;">
+                                <div class="col-3"></div>
+                                <div class="col-3" align="center">
+                                        <a href="/chooseTask" style="width:100%; font-size: 2vmin;height: 100%" class="btn btn-primary text-center">Next</a>
+                                </div>
+                                <div class="col-3" align="center">
+                                        <a href="/headsets"   style="width:100%;height: 100%; font-size: 2vmin" class="btn btn-primary text-center">Back</a>
+                                </div>
+                                <div class="col-3"></div>
+                            </div>
+                        {% else %}
+                            <div class="row" style="height:100%;width:100%;">
+                                <div class="col-sm-6" align="center">
+                                    <p style="margin:0">Contact Quality: <span id="quality" style="height:100%;color: red;">0%</span></p>
+                                </div>
+                                <div class="col-sm-6" align="center">
+                                    <p style="margin:0" style="height:100%;margin-bottom: 0">Battery:
+                                    <img id="battery" src='{{ url_for("static",filename="img/batteryundefined.png") }}'>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        </div>
+                    </div >
+                    <div class="row" id="left_bottom" style="width:100%;">
+                        <ul class="nav nav-pills mb-2 justify-content-center" id="pills-tab" role="tablist" style="height: 10%; width:100%; margin:0">
+                        <li class="nav-item">
+                          <a class="nav-link active" id="pills-home-tab" style="font-size: 2vmin; height:100%;line-height: 2vmin" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true" >2D View</a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link" id="pills-profile-tab" onclick="return triggerResize()" style="font-size: 2vmin;height:100%; line-height: 2vmin" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">3D View</a>
+                        </li>
+                    </ul>
+                        <div class="tab-content" id="pills-tabContent" style="height: 90%; width:100%; margin-top: -0.3vw">
+                          <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" style="height: 100%; width:100%;">
+                              <div id="TwoHead">
+                                <img id="insight-AF3" class="insight-sensor" src="{{ url_for("static",filename="img/insightV2/af3-0.png") }}"/>
+                                <img id="insight-AF4" class="insight-sensor" src="{{ url_for("static",filename="img/insightV2/af4-0.png") }}"/>
+                                <img id="insight-T7"  class="insight-sensor" src="{{ url_for("static",filename="img/insightV2/t7-0.png") }}"/>
+                                <img id="insight-T8"  class="insight-sensor" src="{{ url_for("static",filename="img/insightV2/t8-0.png") }}"/>
+                                <img id="insight-Pz"  class="insight-sensor" src="{{ url_for("static",filename="img/insightV2/pz-0.png") }}"/>
+                              </div>
+                          </div>
+                          <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" style="height: 100%; width:100%">
+                                <canvas id="canvas" style="height:100%; width:100%; outline: none;">
+                                </canvas>
+                          </div>
+                        </div>
+                    </div>
+
+
+                        <script>
+                    document.addEventListener('contextmenu', event => event.preventDefault());
+
+                    function MyLoadingScreen( /* variables needed, for example:*/ text) {
+                        //init the loader
+                        this.loadingUIText = text;
+                    }
+                    MyLoadingScreen.prototype.displayLoadingUI = function() {
+                        //alert(this.loadingUIText);
+
+                    };
+                    MyLoadingScreen.prototype.hideLoadingUI = function() {
+                        //alert("Loaded!");
+
+                    };
+                </script>
+                        <script type="text/javascript">
+                function changeDimention() {
+                    getHeadsetsData();
+                    var image = document.getElementById("changeDimention");
+                    if (currentImageDimention == "3DButton") {
+                        currentImageDimention = "2DButton";
+                        image.src = '{{ url_for("static",filename="img/2Dbutton.png") }}';
+                        document.getElementById('canvas').style.display = "none";
+                        document.getElementById('headsets').style.display = "none";
+                        document.getElementById('TwoHead').style.display = "inline";
+                        document.getElementById('AF3two').style.display = "inline";
+                        document.getElementById('AF4two').style.display = "inline";
+                        document.getElementById('T7two').style.display = "inline";
+                        document.getElementById('T8two').style.display = "inline";
+                        document.getElementById('Pztwo').style.display = "inline";
+                        // document.getElementById('mainHead').style.display = "inline";
+                        // document.getElementById('mainHeadmini').style.display = "inline";
+
+                        // document.getElementById('T7two').style.background = "green";
+                        // document.getElementById('T8two').style.background = "green";
+                        // document.getElementById('Pztwo').style.background = "green";
+                    } else {
+                        currentImageDimention = "3DButton";
+                        image.src = '{{ url_for("static",filename="img/3Dbutton.png") }}';
+                        document.getElementById('canvas').style.display = "inline";
+                        document.getElementById('headsets').style.display = "inline";
+                        document.getElementById('TwoHead').style.display = "none";
+                        document.getElementById('AF3two').style.display = "none";
+                        document.getElementById('AF4two').style.display = "none";
+                        document.getElementById('T7two').style.display = "none";
+                        document.getElementById('T8two').style.display = "none";
+                        document.getElementById('Pztwo').style.display = "none";
+                        // document.getElementById('mainHead').style.display = "none";
+                        // document.getElementById('mainHeadmini').style.display = "none";
+                        load3DScene();
+                    }
+                }
+            </script>
+
+        </div>
+        <div id="rightcol">
+                <div id="right">
+        <div id="graphs" class="" >
+                <div class="row align-items-center" style="height: 10%; padding-top: 1%";>
+                    <div class="col-2">
+                        <label for="sensor">Sensor:</label>
+                    </div>
+                    <div class="col-4">
+                       <select class="form-control" id="sensor" onchange="clearGraph()">
+                            {% for sensor in devcols %}
+                               document.write('<option>{{sensor}}</option>');
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-2">
+                        <label for="sensor">Wave:</label>
+                    </div>
+                    <div class="col-4">
+                        <select class="form-control" id="wave" onchange="clearGraph()">
+                            <option>alpha</option>
+                            <option>betaH</option>
+                            <option>betaL</option>
+                            <option>gamma</option>
+                            <option>theta</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row align-items-center" style="height: 45%;">
+                    <div class="chart" id="lines"></div>
+                </div>
+                <div class="row align-items-center" style="height: 45%; border-top: 10px solid #ffffff;">
+                        <div class="chart" id="bars"></div>
+                </div>
+            </div>
+        </div>
+            </div>
+     </div>
+    <script>
+     var socket = io.connect(location.protocol + '//' + location.host);
+    {% for sensor in devcols %}
+        document.getElementById("{{sensor}}").style.background = "#0d65e0";
+    {% endfor %}
+    socket.on('contactQuality', showDevInfo);
+
+    </script>
+    <script src="{{ url_for('static',filename='js/babylon.js') }}"></script>
+    <script src="{{ url_for('static',filename='js/plotly-latest.min.js') }}"></script>
+    <script>
+        var sensors = ['AF3','AF4','Pz','T7','T8'];
+        var waves = ['alpha','betaH','betaL','gamma','theta'];
+        let layout = {
+            plot_bgcolor: 'rgb(232, 232, 233)',
+            paper_bgcolor: 'rgb(232, 232, 233)',
+            xaxis: {
+                autorange: true,
+                },
+              yaxis: {
+                autorange: true,
+                },
+            margin: {
+              l: 50,
+              r: 20,
+              b: 30,
+              t: 20,
+              pad: 5
+            }, title: false
+        };
+        var cnt = 0;
+        function clearGraph() {
+        let layout = {
+            plot_bgcolor: 'rgb(232, 232, 233)',
+            paper_bgcolor: 'rgb(232, 232, 233)',
+            xaxis: {
+                autorange: true,
+                },
+              yaxis: {
+                autorange: true,
+                },
+            margin: {
+              l: 50,
+              r: 20,
+              b: 30,
+              t: 20,
+              pad: 5
+            }, title: false
+        };
+        Plotly.react('lines', [{
+                y: [],
+                type: 'line'
+            }],layout);
+        cnt=0;
+    }
+        var socket = io.connect(location.protocol + '//' + location.host);
+
+        Plotly.plot('lines', [{
+                y: [],
+                type: 'line'
+            }],layout);
+        Plotly.plot('bars', [{
+                x: waves,
+                y:[0,0,0,0,0],
+                type: 'bar'
+            }],layout);
+            var queue = [];
+
+        function updateSensorChart(data) {
+            var s = document.getElementById("sensor");
+            var w = document.getElementById("wave");
+            var sensor = s.options[s.selectedIndex].value;
+            var wave = w.options[w.selectedIndex].value;
+            let point = data[sensor + '/' + wave];
+            Plotly.extendTraces("lines", {y: [[point]]}, [0]);
+            cnt++;
+            queue.push(point);
+            var lineChart = document.getElementById("lines");
+            if (cnt > 200) {
+                try{
+                    queue.shift();
+                    let maxy = Math.max.apply(Math, queue);
+                    let miny = Math.min.apply(Math, queue);
+                    let update = {
+                        'xaxis.range': [cnt - 200, cnt],
+                        'yaxis.range': [miny-5, maxy+5],
+                    };
+                    Plotly.relayout("lines", update);
+                }catch(err) {
+                console.log(err);
+                console.log("cnt: "+cnt);
+                }
+            }
+        }
+        function updateBandPowerChart(data) {
+            let layout = {
+            plot_bgcolor: 'rgb(232, 232, 233)',
+            paper_bgcolor: 'rgb(232, 232, 233)',
+            xaxis: {
+                autorange: true,
+                },
+              yaxis: {
+                autorange: true,
+                },
+            margin: {
+              l: 50,
+              r: 20,
+              b: 30,
+              t: 20,
+              pad: 5
+            }, title: false
+        };
+            let avg = 0;
+            let yValues = [];
+            waves.forEach(function(wave){
+                sensors.forEach(function(sensor){
+                    avg += data[sensor + '/' + wave];
+                });
+                avg /= sensors.length;
+                yValues.push(avg);
+            });
+            Plotly.react('bars', [{
+                x: waves,
+                y:yValues,
+                type: 'bar'
+            }],layout);
+
+        }
+        var bandpower = {};
+        socket.on('bandPower', function(data) {
+            bandpower = data;
+        });
+        setInterval(function(){
+            if(bandpower != {}){
+            updateBandPowerChart(bandpower);
+            updateSensorChart(bandpower);
+            }
+        },100);
+
+
+    </script>
+    <script>
+        window.onresize = function() {
+            Plotly.Plots.resize('lines');
+            Plotly.Plots.resize('bars');
+        };
+    </script>
+    <script>
+        var Scene;
+        var greyMat;
+        var redMat;
+        var orangeMat;
+        var yellowMat;
+        var greenMat;
+        function load3DScene() {
+            var canvas = document.getElementById("canvas");
+            var engine = new BABYLON.Engine(canvas, true);
+            var loadingScreen = new MyLoadingScreen("I'm loading!!");
+            //Set the loading screen in the engine to replace the default one
+            engine.loadingScreen = loadingScreen;
+            BABYLON.SceneLoader.Load("/../static/3D/", "insightv2.babylon", engine, function(newScene) {
+                Scene = newScene;
+                var camera2 = new BABYLON.ArcRotateCamera("Camera", 3 * Math.PI / 2, Math.PI / 8, 20, BABYLON.Vector3.Zero(), Scene);
+                camera2.setPosition(new BABYLON.Vector3(0, 28, 1));
+                Scene.clearColor = new BABYLON.Color3(232 / 255, 232 / 255, 233 / 255);
+                camera2.attachControl(canvas, true);
+                camera2.target = Scene.getMeshByName('head');
+                Scene.activeCamera = camera2;
+
+                Scene.getMeshByName('head').position.x = 0;
+                Scene.getMeshByName('head').position.y = 10;
+
+                Scene.getMeshByName('head').rotation.z =  Math.PI/5;
+
+                greyMat = new BABYLON.StandardMaterial('greyMat', Scene);
+                greyMat.diffuseColor = BABYLON.Color3.FromInts(100, 100, 100);
+                greyMat.specularColor = BABYLON.Color3.Black(); // matte
+
+                greenMat = new BABYLON.StandardMaterial('greenMat', Scene);
+                greenMat.diffuseColor = BABYLON.Color3.FromInts(0, 255, 0);
+                greenMat.specularColor = BABYLON.Color3.Black(); // matte
+
+                redMat = new BABYLON.StandardMaterial('redMat', Scene);
+                redMat.diffuseColor = BABYLON.Color3.FromInts(255, 0, 0);
+                redMat.specularColor = BABYLON.Color3.Black(); // matte
+
+                orangeMat = new BABYLON.StandardMaterial('redMat', Scene);
+                orangeMat.diffuseColor = BABYLON.Color3.FromInts(255, 150, 0);
+                orangeMat.specularColor = BABYLON.Color3.Black(); // matte
+
+                yellowMat = new BABYLON.StandardMaterial('redMat', Scene);
+                yellowMat.diffuseColor = BABYLON.Color3.FromInts(255, 255, 0);
+                yellowMat.specularColor = BABYLON.Color3.Black(); // matteyellow
+
+                Scene.activeCamera.attachControl(canvas);
+                Scene.executeWhenReady(function() {
+                    engine.runRenderLoop(function() {
+                        Scene.render();
+                    });
+                });
+            });
+            window.addEventListener("resize", function() {
+                engine.resize();
+            });
+        }
+        load3DScene();
+
+        function triggerResize()
+        {
+            window.dispatchEvent(new Event('resize'));
+        }
+        $("#left_bottom").on('shown.bs.tab', function (e) { window.dispatchEvent(new Event('resize')); })
+    </script>
+    <script>
+            Pace.stop();
+            onResize();
+
+</script>
+</body>
+
+
+</html>
