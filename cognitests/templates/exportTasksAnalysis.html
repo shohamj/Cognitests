@@ -147,7 +147,7 @@ socket.on('changeTasksAnalysisSelect', function(data)
        {% endfor %}
       </select>
     </div>
-    <input type="text" id="name" class="form-control" style="text-align:center" placeholder="Choose export file name">
+    <input type="text" id="name" class="form-control" style="text-align:center" placeholder="Choose folder name">
     <br>
     <button id="btn" class="btn btn-primary btn-md" onclick="exportTasks()">Export</button>
     <br>
@@ -159,12 +159,19 @@ socket.on('changeTasksAnalysisSelect', function(data)
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <button class="btn btn-secondary" type="button" data-toggle="collapse" data-target="#consoleWrapper" aria-expanded="false" aria-controls="consoleWrapper">Open Console</button>
+    <button class="btn btn-secondary" type="button" onclick="changeConsoleButtonText(this)" data-toggle="collapse" data-target="#consoleWrapper" aria-expanded="false" aria-controls="consoleWrapper">Open Console</button>
     <div class="collapse" id="consoleWrapper" style="margin-top: 5px;">
-        <textarea class="form-control" style="background: black; color:white; font-family:Courier" name="" id="console" cols="100" rows="4" readonly>Export process will be showed here</textarea>
+        <textarea class="form-control" style="background: black; color:white; font-family:Courier" name="" id="console" cols="100" rows="4" readonly>Export process will be displayed here</textarea>
    </div>
   </div>
   <script>
+  function changeConsoleButtonText(button){
+      if(button.innerHTML === "Open Console")
+          button.innerHTML = "Close Console";
+      else
+          button.innerHTML = "Open Console";
+
+  }
 $(window).on('load', function (e) {
       $(".taskselector").hide();
       $(".nback").show();

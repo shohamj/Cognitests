@@ -44,7 +44,7 @@ textarea{
     function addParagraph(){
         $("#paragraphs").append(`<li>
                                     <div class="form-group">
-                                        <textarea class="form-control" onkeyup="autosize(this)" rows ='1' name="pars[]" placeholder="הכנס טקסט כאן"></textarea>
+                                        <textarea class="form-control" onkeyup="autosize(this)" rows ='1' name="pars[]" placeholder="Enter text here"></textarea>
                                     </div>
                                 </li>`)
     }
@@ -81,22 +81,22 @@ textarea{
     {% include "includes/_instructions.html" %}
     <form id="form" style="text-align:right" method="POST" action="/addInstructions/send/">
         <div class="form-group">
-            <input type="text" class="form-control" name="name" placeholder="...שם דף ההוראות" style="text-align:center">
+            <input type="text" class="form-control" name="name" placeholder="Instructions page name..." style="text-align:center">
         </div>  
         <div class="form-group">
-            <input type="text" class="form-control" name="title" placeholder="...כותרת דף ההוראות" style="text-align:center">
+            <input type="text" class="form-control" name="title" placeholder="Instructions page title..." style="text-align:center">
         </div>        
         <ul dir="rtl" id="paragraphs">
             <li>
                 <div class="form-group">
-                    <textarea class="form-control" onkeyup="autosize(this)" rows ='1' name="pars[]" placeholder="הכנס טקסט כאן"></textarea>
+                    <textarea class="form-control" onkeyup="autosize(this)" rows ='1' name="pars[]" placeholder="Enter text here"></textarea>
                 </div>
             </li>
         </ul> 
         <div id="footer">
-            <button type="submit" id="submitbutton" class="btn btn-primary">צור דף הוראות</button>
-            <button type="button" class="btn btn-info" onclick="preview()">תצוגה מוקדמת</button>
-            <button type="button" class="btn btn-danger" onclick="deleteParagraph()" >הסר פסקה</button>
-            <button type="button" class="btn btn-secondary" onclick="addParagraph()">הוסף פסקה</button>
+            <button type="submit" id="submitbutton" class="btn btn-primary">Create instructions page</button>
+            <button type="button" class="btn btn-info" onclick="preview()">Preview</button>
+            <button type="button" class="btn btn-danger" onclick="deleteParagraph()" >Remove last paragraph</button>
+            <button type="button" class="btn btn-secondary" onclick="addParagraph()">Add new paragraph</button>
         </div>
     </form>

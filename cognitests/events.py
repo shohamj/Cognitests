@@ -3,7 +3,7 @@ import shutil
 import threading
 
 import cognitests
-from cognitests import socketio, db, TASK_ID
+from cognitests import socketio, db
 from cognitests.helpers import exportTaskAnalysis
 from cognitests.models import Task, NbackSettings, EyesSettings, IAPSSettings, Group, Subject
 from cognitests.modules import influxdbAPI as influx, import_export as import_export
@@ -24,9 +24,10 @@ def evCloseTask():
         cognitests.STOP_POW.set()
     if cognitests.STOP_FAC:
         cognitests.STOP_FAC.set()
-    db.session.delete(Task.query.get(TASK_ID))
+    if cognitests.TASK_ID:
+        db.session.delete(Task.query.get(cognitests.TASK_ID))
+        influx.deletTask("task" + str(cognitests.TASK_ID))
     db.session.commit()
-    influx.deletTask("task" + str(TASK_ID))
 
 
 @socketio.on('openPath')

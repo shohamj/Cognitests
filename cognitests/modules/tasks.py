@@ -5,9 +5,6 @@ import random
 import threading
 import time
 
-import pygame
-
-pygame.mixer.init()
 _time = time.time()
 
 
@@ -248,7 +245,7 @@ class NBackTask:
             print("Round", i, "starting...")
             self.setContent("", "", "")
             self.status = "rest"
-            self.evTimer.wait(timeout=self.rest)  # Should be 30 sec, too long for debug
+            self.evTimer.wait(timeout=self.rest)
             self.setContent("", "+", "")
             self.status = "between"
             self.evTimer.wait(timeout=self.timeout)
@@ -366,7 +363,11 @@ class EyesTask:
         self.evTaskWindowLoaded.set()
 
     def run(self):
+        import pygame
+        pygame.mixer.init()
         path = os.path.dirname(os.path.realpath(__file__))
+        print("self.open_sound", self.open_sound)
+        print("self.close_sound", self.close_sound)
         if self.open_sound:
             playOpen = os.path.isfile(path + "/../../DBS/sounds/" + self.open_sound)
         if self.close_sound:
@@ -389,7 +390,7 @@ class EyesTask:
             self.setContent("Open")
             self.eyesState = "Open"
             _t = time.time()
-            if playOpen:
+            if self.open_sound:
                 pygame.mixer.music.load(path + "/../../DBS/sounds/" + self.open_sound)
                 pygame.mixer.music.play()
             # openSoundPlayer.play()
@@ -399,7 +400,7 @@ class EyesTask:
             self.setContent("Close")
             self.eyesState = "Closed"
             _t = time.time()
-            if playClose:
+            if self.close_sound:
                 pygame.mixer.music.load(path + "/../../DBS/sounds/" + self.close_sound)
                 pygame.mixer.music.play()
             print("closeSoundPlayer - time:", time.time() - _t)

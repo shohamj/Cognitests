@@ -185,6 +185,7 @@ def insert_subjects(data):
     for subject in data:
         try:
             subject.pop('id', None)
+            subject.pop('group_id', None)
             groups = subject.pop('groups', None)
             new_id = insertSubject(subject, True)
             for group in groups:

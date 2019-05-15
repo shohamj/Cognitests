@@ -33,7 +33,6 @@ def startWindow(url, title, icon="resources/chromium.ico"):
         print("icon", os.path.abspath(icon))
         setWindowIcon(window_handle, icon)
         ctypes.windll.user32.ShowWindow(window_handle, 3)
-
         cef.MessageLoop()
         del BROWSER
         cef.Shutdown()

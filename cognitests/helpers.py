@@ -153,6 +153,7 @@ def insertPowForEyes(task_id, eyesState, round, data):
 
 def on_task_start(type):
     try:
+        print("on_task_start")
         task_data = Task(subject_id=cognitests.SUBJECT_ID, start_time=time.time(), type=type)
         db.session.add(task_data)
         db.session.flush()
@@ -366,6 +367,10 @@ def get_open_port():
 
 
 def main():
+    import pygame
+    from cognitests.modules.splashScreen import splash
+    pygame.mixer.init()
+    splash("cognitests/static/img/brainBlue.png")
     open_port = get_open_port()
 
     t1 = threading.Thread(target=socketio.run, args=(app,), kwargs={'port': open_port})
@@ -374,12 +379,12 @@ def main():
                           'http://127.0.0.1:' + str(open_port), "Cognitests", "cognitests\static\img/brainBlue.ico"))
 
     t1.start()
-    t2.start()
-
     startCortex()
     influx.start_influx()
     db.create_all()
-
+    time.sleep(1)
+    t2.start()
+    pygame.display.quit()
     t1.join()
     t2.join()
 
