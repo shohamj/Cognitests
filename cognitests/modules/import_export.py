@@ -54,7 +54,7 @@ def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export
                 ["influxdb\influx.exe", "-database", "Tasks", "-execute", "select * from task" + str(id), "-format",
                  "csv", "-precision", "rfc3339"], stdout=f)
             f.close()
-            from modules.fixExcel import utf_to_windows
+            from cognitests.modules.fixExcel import utf_to_windows
             utf_to_windows(csv_path)
 
         path.append(os.path.abspath(os.path.join(dir, "../../Exports/data/" + filename)))
@@ -75,6 +75,7 @@ def import_tasks_data(path):
                 data = json.load(jsonFile)
                 return insert_tasks(data)
     except Exception as e:
+        print(e)
         return ["Couldn't import: Reason: " + str(e)]
 
 
@@ -97,14 +98,17 @@ def insert_tasks(tasks):
             db.session.refresh(task)
             t_id = task.id
             for group in g:
-                db.session.add(PartOfGroup(group_id=group[0], subject_id=s_id))
+                exists = db.session.query(
+                    db.exists().where(PartOfGroup.group_id == group[0] and PartOfGroup.subject_id == s_id)).scalar()
+                if not exists:
+                    db.session.add(PartOfGroup(group_id=group[0], subject_id=s_id))
             db.session.commit()
             insert_data(data, t_id)
             log.append("Imported: Subject: " + s['name'] + " Started: " + time.strftime('%Y-%m-%d %H:%M:%S',
                                                                                         time.localtime(
                                                                                             t['start_time'])))
-        except:
-            log.append("Couldn't import: " + str(data))
+        except Exception as e:
+            log.append("Couldn't import: " + str(e))
     return log
 
 

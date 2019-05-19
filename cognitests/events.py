@@ -95,7 +95,10 @@ def importTaskData(file_info):
     with open('Exports/tmp/' + name, 'wb') as f:
         f.write(file)
     log = import_export.import_tasks_data('Exports/tmp/' + name)
-    shutil.rmtree('Exports/tmp')
+    try:
+        shutil.rmtree('Exports/tmp')
+    except Exception as e:
+        print("importTaskData Error:", e)
     socketio.emit('importTaskDataDone', {'log': log})
 
 

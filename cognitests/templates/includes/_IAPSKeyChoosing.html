@@ -49,7 +49,7 @@
     });
     function chooseKey(e) {
         if(choosing == true){
-            selectedBtn.html(e.key);
+            selectedBtn.html("Selected: '" + e.key + "'");
             window[selectedBtn.prop('id')] = e.which;
             choosing = false;
             $(".choose-btn").prop('disabled', false)
