@@ -221,21 +221,34 @@ def exportSettings(settings=[], filename="default"):
     if not os.path.exists("Exports/settings/"):
         os.makedirs("Exports/settings/")
     data = {"settings": []}
+    f = zipfile.ZipFile(os.path.join(dir, "../../Exports/settings/" + filename + '.zip'), 'w')
     for task in settings:
         s = None
         if task["type"] == "nback":
             s = NbackSettings.query.get(task["id"])
         elif task["type"] == "eyes":
             s = EyesSettings.query.get(task["id"])
+            if s.open_sound:
+                f.write(os.path.join(dir, "../../DBS/sounds/" + s.open_sound), "sounds/" + s.open_sound,
+                        compress_type=zipfile.ZIP_DEFLATED)
+            if s.close_sound:
+                f.write(os.path.join(dir, "../../DBS/sounds/" + s.close_sound), "sounds/" + s.close_sound,
+                        compress_type=zipfile.ZIP_DEFLATED)
         elif task["type"] == "iaps":
             s = IAPSSettings.query.get(task["id"])
+            for dirpath, dirs, files in os.walk(os.path.join(dir, "../../DBS/images/" + s.images_path)):
+                for file in files:
+                    fn = os.path.join(dirpath, file)
+                    dest_name = os.path.relpath((os.path.join(dirpath, file)), os.path.join(dir, "../../DBS/images/"))
+                    f.write(fn, "images/" + dest_name, compress_type=zipfile.ZIP_DEFLATED)
+            f.write(os.path.join(dir, "../../DBS/images/masks/" + s.mask), "images/masks/" + s.mask,
+                    compress_type=zipfile.ZIP_DEFLATED)
         if s:
             s = s.as_dict()
             s["type"] = task["type"]
             data["settings"].append(s)
     with open(os.path.join(dir, "../../Exports/settings/" + filename + '.json'), "w") as jsonFile:
         json.dump(data, jsonFile)
-    f = zipfile.ZipFile(os.path.join(dir, "../../Exports/settings/" + filename + '.zip'), 'w')
     f.write(os.path.join(dir, "../../Exports/settings/" + filename + '.json'), filename + '.json',
             compress_type=zipfile.ZIP_DEFLATED)
     if os.path.exists(os.path.join(dir, "../../Exports/settings/" + filename + '.json')):
@@ -250,9 +263,12 @@ def importSettings(path):
         if zipfile.is_zipfile(path):
             archive = zipfile.ZipFile(path, 'r')
             for file in archive.namelist():
-                data = archive.read(file)
-                unzippedjson = json.loads(data.decode("utf-8"))
-                return insertSettings(unzippedjson['settings'])
+                if file.endswith(".json"):
+                    data = archive.read(file)
+                    unzippedjson = json.loads(data.decode("utf-8"))
+                elif file.startswith('sounds/') or file.startswith('images/'):
+                    archive.extract(file, os.path.join(dir, '../../DBS/'))
+            return insertSettings(unzippedjson['settings'])
         else:
             with open(path, "r") as jsonFile:
                 data = json.load(jsonFile)
