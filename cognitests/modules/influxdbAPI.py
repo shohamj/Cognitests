@@ -216,30 +216,31 @@ def getClicksAnalysis(task, diff=None, round=None):
     roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
     if round:
         roundQuery = " AND round='" + round + "'"
-    print('SELECT * FROM ' + task + " WHERE type='click' AND is_correct=true" + diffString + roundQuery)
+    print(
+        'SELECT * FROM ' + task + " WHERE type='click' AND (is_correct=true OR is_correct=1)" + diffString + roundQuery)
     correct = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND is_correct=true" + diffString + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (is_correct=true OR is_correct=1)" + diffString + roundQuery).get_points()
     incorrect = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND is_correct=false" + diffString + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (is_correct=false OR is_correct=0)" + diffString + roundQuery).get_points()
     cc = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND clicked=true AND is_correct=true" + diffString + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (clicked=true OR clicked=1) AND (is_correct=true OR is_correct=1)" + diffString + roundQuery).get_points()
     ci = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND clicked=true AND is_correct=false" + diffString + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (clicked=true OR clicked=1) AND (is_correct=false OR is_correct=0)" + diffString + roundQuery).get_points()
     ac = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND clicked=false AND is_correct=true" + diffString + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (clicked=false OR clicked=0) AND (is_correct=true OR is_correct=1)" + diffString + roundQuery).get_points()
     ai = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND clicked=false AND is_correct=false" + diffString + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (clicked=false OR clicked=0) AND (is_correct=false OR is_correct=0)" + diffString + roundQuery).get_points()
     correct_delay = myclient.query(
-        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND is_correct=true AND delay > 0" + diffString + roundQuery).get_points()
+        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND (is_correct=true OR is_correct=1) AND delay > 0" + diffString + roundQuery).get_points()
     correct_delay = list(correct_delay)
     incorrect_delay = myclient.query(
-        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND is_correct=false AND delay > 0" + diffString + roundQuery).get_points()
+        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND (is_correct=false OR is_correct=0) AND delay > 0" + diffString + roundQuery).get_points()
     incorrect_delay = list(incorrect_delay)
     cc_delay = myclient.query(
-        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND clicked=true AND is_correct=true AND delay > 0" + diffString + roundQuery).get_points()
+        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND (clicked=true OR clicked=1) AND (is_correct=true OR is_correct=1) AND delay > 0" + diffString + roundQuery).get_points()
     cc_delay = list(cc_delay)
     ci_delay = myclient.query(
-        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND clicked=true AND is_correct=false AND delay > 0" + diffString + roundQuery).get_points()
+        'SELECT MEAN(delay) FROM ' + task + " WHERE type='click' AND (clicked=true OR clicked=1) AND (is_correct=false OR is_correct=0) AND delay > 0" + diffString + roundQuery).get_points()
     ci_delay = list(ci_delay)
     print("cc_delay", cc_delay, "ci_delay", ci_delay)
     analysis = {"correct": {}, "incorrect": {}, "cc": {}, "ci": {}, "ac": {}, "ai": {}}
@@ -291,9 +292,9 @@ def getClicksWavesMeans(task, round=None):
     if round:
         roundQuery = " AND round='" + round + "'"
     correct = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND is_correct=true" + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (is_correct=true OR is_correct=1)" + roundQuery).get_points()
     incorrect = myclient.query(
-        'SELECT * FROM ' + task + " WHERE type='click' AND is_correct=false" + roundQuery).get_points()
+        'SELECT * FROM ' + task + " WHERE type='click' AND (is_correct=false OR is_correct=0)" + roundQuery).get_points()
     res = {}
     correct_data = getMeanForClicks(correct, task)
     incorrect_data = getMeanForClicks(incorrect, task)
