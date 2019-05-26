@@ -4,8 +4,15 @@ import os.path
 import random
 import threading
 import time
+from abc import ABC, abstractmethod
 
 _time = time.time()
+
+
+class Task(ABC):
+    @abstractmethod
+    def run(self):
+        pass
 
 
 def default_function(*arg):
@@ -19,19 +26,21 @@ def run_after_delay(func, delay):
     print("func done:")
 
 
-def start_task(task, on_done=None):
+def start_task(task: Task, on_done=None):
     def wrapped_task(task, on_done):
         task.run()
         if on_done is not None and task.isAlive is True:
             on_done()
 
+    if not isinstance(task, Task):
+        raise ValueError('Expected parameter of type Task')
     t = threading.Thread(target=wrapped_task, args=(task, on_done))
     t.setDaemon(True)
     t.start()
     return t
 
 
-class NBackTask:
+class NBackTask(Task):
     class Trial:
         def __init__(self, words):
             self.couples = []
@@ -315,7 +324,7 @@ class NBackTask:
         return {"error": False, "words_amount": words_amount}
 
 
-class EyesTask:
+class EyesTask(Task):
 
     def __init__(self, config: dict, functions: dict):
         # Config
@@ -412,7 +421,7 @@ class EyesTask:
             self.setContentVisibility(False)
 
 
-class IAPSTask:
+class IAPSTask(Task):
 
     def __init__(self, config: dict, functions: dict):
         # Config
@@ -528,14 +537,6 @@ class IAPSTask:
             self.setContentVisibility(False)
 
 
-def pressForever(task):
-    from random import randint, uniform
-    e = ["Pleasant", "Unpleasant", "Neutral"]
-    while True:
-        emotion = e[randint(0, 2)]
-        task.spaceKeyPressed()
-        task.emotionChosen(emotion)
-        threading.Event().wait(timeout=uniform(2, 3))
-
-
-
+if __name__ == '__main__':
+    print(3)
+    start_task(3)

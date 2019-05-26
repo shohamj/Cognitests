@@ -17,6 +17,7 @@ def start_influx(open_port=None):
     global influx_server, myclient
     influxdEXE = os.path.abspath(path + "/../../influxdb/influxd.exe")
     influxdCONF = os.path.abspath(path + "/../../influxdb/influxdb.conf")
+    print(influxdEXE)
     influx_server = subprocess.Popen(
         [influxdEXE, "-config", influxdCONF],
         shell=False)
@@ -275,16 +276,23 @@ def getClicksAnalysis(task, diff=None, round=None):
 
 
 def getMeanForClicks(clicks, task):
-    queries = "SELECT mean(*) FROM "
+    waves = {"alpha", "betaH", "betaL", "gamma", "theta"}
+    res = {}
+    counter = 0
     for click in clicks:
-        correct_time_slices = "(time <= '" + click["time"] + "' AND time >= '" + subMS(click["time"], 1500) + "')"
-        queries += '(SELECT mean(*) FROM ' + task + " WHERE type='pow' AND" + correct_time_slices + "),"
-    queries = queries[:-1]
-    try:
-        t = myclient.query(queries).get_points()
-    except:
-        t = []
-    return list(t)
+        correct_time_slices = "(time <= '" + click["time"] + "' AND time >= '" + subMS(click["time"], 2500) + "')"
+        query = 'SELECT * FROM ' + task + " WHERE type='pow' AND" + correct_time_slices
+        t = myclient.query(query).get_points()
+        for row in t:
+            counter += 1
+            for key in row:
+                if any(wave in key for wave in waves):
+                    if key not in res:
+                        res[key] = 0
+                    res[key] += row[key]
+    for key in res:
+        res[key] /= counter
+    return res
 
 
 def getClicksWavesMeans(task, round=None):
@@ -298,8 +306,8 @@ def getClicksWavesMeans(task, round=None):
     res = {}
     correct_data = getMeanForClicks(correct, task)
     incorrect_data = getMeanForClicks(incorrect, task)
-    res["correct"] = correct_data[0] if len(correct_data) > 0 else []
-    res["incorrect"] = incorrect_data[0] if len(incorrect_data) > 0 else []
+    res["correct"] = correct_data if correct_data else {}
+    res["incorrect"] = incorrect_data if incorrect_data else []
     return res
 
 
@@ -496,7 +504,7 @@ def getPicturesTimes(task, by_query):
 
 if __name__ == '__main__':
     start_influx()
-    print(getClicksAnalysis("task8", 3, "Round 3"))
+    print(getClicksWavesMeans("task99", "Round 1"))
 
     # import numpy as np
     #

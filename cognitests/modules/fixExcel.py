@@ -1,4 +1,5 @@
 def utf_to_windows(file):
+    return
     import codecs
     from shutil import copyfile
     import os
