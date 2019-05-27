@@ -4,7 +4,7 @@ import threading
 
 import cognitests
 from cognitests import socketio, db
-from cognitests.helpers import exportTaskAnalysis
+from cognitests.helpers import exportTaskAnalysis, importTasksData
 from cognitests.models import Task, NbackSettings, EyesSettings, IAPSSettings, Group, Subject
 from cognitests.modules import influxdbAPI as influx, import_export as import_export
 
@@ -88,19 +88,7 @@ def exportSettings(settings, file_name):
 
 @socketio.on('importTaskData')
 def importTaskData(file_info):
-    file = file_info['file']
-    name = file_info['name']
-    if not os.path.exists("Exports/tmp"):
-        os.makedirs("Exports/tmp")
-    with open('Exports/tmp/' + name, 'wb') as f:
-        f.write(file)
-    log = import_export.import_tasks_data('Exports/tmp/' + name)
-    try:
-        shutil.rmtree('Exports/tmp')
-    except Exception as e:
-        print("importTaskData Error:", e)
-    socketio.emit('importTaskDataDone', {'log': log})
-
+    threading.Thread(target=importTasksData, args=(file_info,)).start()
 
 @socketio.on('importSubjects')
 def importSubjects(file_info):

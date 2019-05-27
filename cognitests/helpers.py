@@ -1,4 +1,5 @@
 import os
+import shutil
 import threading
 import time
 from random import randint
@@ -7,6 +8,7 @@ import requests
 from flask import request, jsonify
 
 import cognitests
+import cognitests.modules.import_export as import_export
 from cognitests import app, socketio, db, APP_ROOT
 from cognitests.models import Task, Subject, Instructions
 from cognitests.modules import influxdbAPI as influx, exportAnlaysis as exportAnlaysis, CEFPython
@@ -133,6 +135,20 @@ def exportTaskAnalysis(tasks, dir_name, task_type):
     with app.app_context():
         socketio.emit('exportTaskAnalysisDone', {"path": [path]})
 
+
+def importTasksData(file_info):
+    file = file_info['file']
+    name = file_info['name']
+    if not os.path.exists("Exports/tmp"):
+        os.makedirs("Exports/tmp")
+    with open('Exports/tmp/' + name, 'wb') as f:
+        f.write(file)
+    log = import_export.import_tasks_data('Exports/tmp/' + name)
+    try:
+        shutil.rmtree('Exports/tmp')
+    except Exception as e:
+        print("importTaskData Error:", e)
+    socketio.emit('importTaskDataDone', {'log': log})
 
 def insertPowForNBack(task_id, task_status, task_difficulty, task_round, data):
     data["status"] = task_status

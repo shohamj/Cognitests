@@ -196,7 +196,7 @@ def exportTask(task, dir_path, type, log):
     log("               Done!")
     for round in rounds:
         if round != "Waiting":
-            log("           Analysing " + round + "...")
+            log("               Analysing " + round + "...")
             if type == 'nback':
                 exportNBackTaskAnalysis(workbook, round, task["id"], round=round)
             elif type == 'eyes':
