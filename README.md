@@ -4,9 +4,15 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
 
 ## Table of Contents  
 - [Cognitests](#cognitests)
+  * [Requirements](#Requirements)
   * [Installation](#Installation)
   * [Compilation](#Compilation)
   * [Docs](#docs)
+  
+## Requirements
+  Python 3.X, tested with 3.7
+  Cortex Service V2 
+  InfluxDB
   
 ## Installation
 1.	Download or clone Cognitests from our GitHub: https://github.com/shohamj/Cognitests
