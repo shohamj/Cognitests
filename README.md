@@ -6,7 +6,7 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
 - [Cognitests](#cognitests)
   * [Requirements](#Requirements)
   * [Installation](#Installation)
-  * [Compilation](#Compilation)
+  * [Packeging](#Packeging)
   * [Docs](#docs)
   
 ## Requirements
@@ -24,7 +24,7 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
 7.	Locate the folder “influxdb” at the location where you saved Cognitests and extract the InfluxDB files into in, make sure to use the “influxdb.conf” file provided with Cognitests (file is located under influxdb) instead the one provided in the InfluxDB download folder.
 8.	Run Cognitests with the command “python run.py”
 
-## Compilation
+## Packeging
 
 ## Docs
 
