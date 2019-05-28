@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 import cognitests.modules.CEFPython as CEFPython
 import cognitests.modules.influxdbAPI as influx
-from cognitests.modules.CortexService import startCortex, terminateCortex
+from cognitests.modules.CortexService import startCortex, stopCortex
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 

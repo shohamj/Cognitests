@@ -26,7 +26,4 @@ def connect_long(on_message=None, on_error=None, on_close=None, on_open=None):
 
 
 if __name__ == '__main__':
-    ws = connect_long(on_open=print, on_message=print)
-    threading.Event().wait(1)
-    ws.send("gggg")
-    threading.Event().wait()
+    connect()

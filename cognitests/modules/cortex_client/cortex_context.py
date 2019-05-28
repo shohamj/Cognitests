@@ -130,5 +130,12 @@ def get_last_headset():
 
 
 if __name__ == '__main__':
-    e1 = queryHeadsets("INSIGHT-5a688edd")
-    print(e1)
+    print("hhhhh")
+
+    print(queryHeadsets())
+    print(queryHeadsets())
+    print(queryHeadsets())
+    print(queryHeadsets())
+    print(queryHeadsets())
+    print(queryHeadsets())
+    print("hhhhh3")

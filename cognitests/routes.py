@@ -204,8 +204,8 @@ def data(headsetID=None):
 
 @app.route('/_queryHeadsets')
 def _queryheadsets():
+    print(queryHeadsets())
     return jsonify(queryHeadsets())
-    # return fakehs()
 
 
 @app.route('/_taskInfo')

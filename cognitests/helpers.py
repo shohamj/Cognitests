@@ -12,7 +12,7 @@ import cognitests.modules.import_export as import_export
 from cognitests import app, socketio, db, APP_ROOT
 from cognitests.models import Task, Subject, Instructions
 from cognitests.modules import influxdbAPI as influx, exportAnlaysis as exportAnlaysis, CEFPython
-from cognitests.modules.CortexService import startCortex, terminateCortex
+from cognitests.modules.CortexService import startCortex
 from cognitests.modules.cortex_client import Streams
 from cognitests.modules.cortex_client import set_send, subscribe, get_last_headset
 from cognitests.modules.tasks import EyesTask, start_task, IAPSTask, NBackTask
@@ -405,4 +405,4 @@ def main():
     t2.join()
 
     influx.close_influx()
-    terminateCortex()
+    # stopCortex() no real reason to stop it
