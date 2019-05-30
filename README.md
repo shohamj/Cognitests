@@ -15,7 +15,7 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
   InfluxDB<br />
   
 ## Installation
-1.	Download or clone Cognitests from our GitHub: https://github.com/shohamj/Cognitests
+1.	Clone or download Cognitests from our GitHub: https://github.com/shohamj/Cognitests
 2.	Download and install the latest version of Python from the official site: https://www.python.org/downloads/
 3.	From the location where you saved Cognitests, run “pip install requirements.txt”.
 4.	Download Emotiv Installer from https://www.emotiv.com/developer/
