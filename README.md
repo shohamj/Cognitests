@@ -11,7 +11,7 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
   
 ## Requirements
   Python 3.X, tested with 3.7<br />
-  Cortex Service, Cortex 2.x is not supported yet. <br />
+  Cortex Service, Cortex 2.X is not supported yet. <br />
   InfluxDB<br />
   
 ## Installation
