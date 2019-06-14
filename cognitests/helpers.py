@@ -12,7 +12,7 @@ import cognitests.modules.import_export as import_export
 from cognitests import app, socketio, db, APP_ROOT
 from cognitests.models import Task, Subject, Instructions
 from cognitests.modules import influxdbAPI as influx, exportAnlaysis as exportAnlaysis, CEFPython
-from cognitests.modules.CortexService import startCortex
+from cognitests.modules.CortexService import startCortex, stopCortex
 from cognitests.modules.cortex_client import Streams
 from cognitests.modules.cortex_client import set_send, subscribe, get_last_headset
 from cognitests.modules.tasks import EyesTask, start_task, IAPSTask, NBackTask
@@ -149,6 +149,7 @@ def importTasksData(file_info):
     except Exception as e:
         print("importTaskData Error:", e)
     socketio.emit('importTaskDataDone', {'log': log})
+
 
 def insertPowForNBack(task_id, task_status, task_difficulty, task_round, data):
     data["status"] = task_status
@@ -382,9 +383,40 @@ def get_open_port():
     return port
 
 
+def checkDatabaseFiles():
+    path = os.path.dirname(os.path.realpath(__file__))
+    for dir in ["/DBS/operative/", "/DBS/recordings/", "/DBS/tasks/", "/DBS/sounds/", "/DBS/images/",
+                "/DBS/images/masks"]:
+        if not os.path.exists(path + "/../" + dir):
+            print(os.path.abspath(path + "/../" + dir))
+            os.makedirs(path + "/../" + dir)
+    for file in ["/DBS/operative/operative.db", "/DBS/tasks/settings.db"]:
+        if not os.path.exists(path + "/../" + file):
+            print(os.path.abspath(path + "/../" + file))
+            f = open(path + "/../" + file, "w+")
+            f.close()
+
+
+def waitToLocalServer(port):
+    import socket
+    from socket import AF_INET, SOCK_DGRAM
+    s = socket.socket(AF_INET, SOCK_DGRAM)
+    s.settimeout(10)
+    server_host = 'localhost'
+    server_port = port
+    while True:
+        try:
+            s.connect((server_host, server_port))
+            break
+        except:
+            pass
+    s.close()
+
+
 def main():
     import pygame
     from cognitests.modules.splashScreen import splash
+    checkDatabaseFiles()
     pygame.mixer.init()
     splash("cognitests/static/img/brainBlue.png")
     open_port = get_open_port()
@@ -392,17 +424,18 @@ def main():
     t1 = threading.Thread(target=socketio.run, args=(app,), kwargs={'port': open_port})
     t2 = threading.Thread(target=CEFPython.startWindow,
                           args=(
-                          'http://127.0.0.1:' + str(open_port), "Cognitests", "cognitests\static\img/brainBlue.ico"))
+                              'http://127.0.0.1:' + str(open_port), "Cognitests",
+                              "cognitests\static\img/brainBlue.ico"))
 
     t1.start()
     startCortex()
     influx.start_influx()
     db.create_all()
-    time.sleep(1)
+    waitToLocalServer(open_port)
     t2.start()
     pygame.display.quit()
     t1.join()
     t2.join()
 
     influx.close_influx()
-    # stopCortex() no real reason to stop it
+    stopCortex()

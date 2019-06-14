@@ -204,7 +204,6 @@ def data(headsetID=None):
 
 @app.route('/_queryHeadsets')
 def _queryheadsets():
-    print(queryHeadsets())
     return jsonify(queryHeadsets())
 
 
@@ -537,6 +536,7 @@ def exportTasksData():
 
 @app.route('/fullScreenOn')
 def fullScreenOn():
+    return "fullScreenOn"  # Disabling fullscreen toggle for presentation
     try:
         CEFPython.toggleFullscreen(True)
     except:
@@ -546,6 +546,7 @@ def fullScreenOn():
 
 @app.route('/fullScreenOff')
 def fullScreenOff():
+    return "fullScreenOff"  # Disabling fullscreen toggle for presentation
     CEFPython.toggleFullscreen(False)
     return "fullScreenOff"
 

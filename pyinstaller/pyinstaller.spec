@@ -43,8 +43,7 @@ else:
 
 a = Analysis(['../run.py'],
              hiddenimports=['engineio.async_drivers.threading'],
-             pathex=['E:\\Dropbox\\Project\\Emotiv'],
-             datas=[('../templates', 'templates'), ('../static', 'static'), ('../EmotivCortexService', 'EmotivCortexService'),('../influxdb', 'influxdb'),('../DBS', 'DBS'),],
+             datas=[('../cognitests/templates', 'cognitests/templates'), ('../cognitests/static', 'cognitests/static'), ('../influxdb', 'influxdb'),('../EmotivCortexService', 'EmotivCortexService')],
              hookspath=["."],  # To find "hook-cefpython3.py"
              cipher=cipher_obj,
              win_private_assemblies=True,
@@ -63,13 +62,13 @@ pyz = PYZ(a.pure,
 exe = EXE(pyz,
           a.scripts,
           exclude_binaries=True,
-          name="Cortex",
+          name="Cognitests",
           debug=DEBUG,
           strip=False,
           upx=False,
           console=True,
           uac_admin=True,
-          icon='../static/img/brainBlue.ico')
+          icon='../cognitests/static/img/brainBlue.ico')
 
 COLLECT(exe,
         a.binaries,
@@ -77,4 +76,4 @@ COLLECT(exe,
         a.datas,
         strip=False,
         upx=False,
-        name="Cortex")
+        name="Cognitests")

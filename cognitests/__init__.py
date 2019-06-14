@@ -10,17 +10,6 @@ from cognitests.modules.CortexService import startCortex, stopCortex
 
 APP_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-for dir in ["/../DBS/operative/", "/../DBS/recordings/", "/../DBS/tasks/", "/../DBS/sounds/", "/../DBS/images/",
-            "/../DBS/images/masks"]:
-    if not os.path.exists(APP_ROOT + dir):
-        print(os.path.abspath(APP_ROOT + dir))
-        os.makedirs(dir)
-for file in ["/../DBS/operative/operative.db", "/../DBS/tasks/settings.db"]:
-    if not os.path.exists(APP_ROOT + file):
-        print(os.path.abspath(APP_ROOT + file))
-        f = open(file, "w+")
-        f.close()
-
 app = Flask(__name__)
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../DBS/operative/operative.db'

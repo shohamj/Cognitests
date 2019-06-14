@@ -1,4 +1,4 @@
-URL = "wss://localhost:6868"
+URL = "wss://localhost:54321"
 USERNAME = None
 PASSWORD = None
 CLIENT_ID = None

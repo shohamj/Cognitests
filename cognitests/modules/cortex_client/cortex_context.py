@@ -13,21 +13,27 @@ LAST_HEADSET = None
 
 
 def queryHeadsets(headset_id: str = None):
+    import time
+    t = time.time()
     try:
         ws = connect()
+        print("Connection time:", time.time() - t)
+
         method = Methods.QUERY_HEADSETS.value
         params = {}
         if headset_id:
             params["headsetId"] = headset_id
         req = Request(method=method, params=params)
+        t = time.time()
         ws.send(req.to_string())
         res = Response.of_json(ws.recv())
+        print("Query time:", time.time() - t)
         ws.close()
         return res.result
     except Exception as e:
         print("Error - queryHeadsets:", e)
+        print(time.time() - t)
         return json.loads("[]")
-
 
 def authorize(ws):
     try:
@@ -130,12 +136,14 @@ def get_last_headset():
 
 
 if __name__ == '__main__':
-    print("hhhhh")
+    print("Start test")
+    import time
 
-    print(queryHeadsets())
-    print(queryHeadsets())
-    print(queryHeadsets())
-    print(queryHeadsets())
-    print(queryHeadsets())
-    print(queryHeadsets())
-    print("hhhhh3")
+    ws = connect()
+    t1 = time.time()
+    auth = authorize(ws)
+    print(auth)
+    print("authorize time", time.time() - t1)
+    while True:
+        print("************************************")
+        queryHeadsets()

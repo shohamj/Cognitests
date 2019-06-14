@@ -37,16 +37,24 @@ def subscribe_listener(stream, headset_id, stop_event):
         sensors = epoc
     else:
         sensors = insight
+    data = {}
     while not stop_event.is_set():
         if stream == "dev":
             data = {"Battery": 4, "Signal": 2}
             for s in sensors:
-                data[s] = random.randint(0.0, 4.0) / 1.0
+                data[s] = 4.0
         if stream == "pow":
-            data = {}
             for s in sensors:
                 for w in waves:
-                    data[s + "/" + w] = random.uniform(10.0, 50.0)
+                    sensor_wave = s + "/" + w
+                    if sensor_wave in data:
+                        if random.random() > 0.5 and data[sensor_wave] <= 3 or data[sensor_wave] <= 0.1:
+                            data[sensor_wave] += random.normalvariate(0.1, 0.05)
+                        else:
+                            data[sensor_wave] -= random.normalvariate(0.1, 0.05)
+                    else:
+                        data[sensor_wave] = random.normalvariate(1.5, 0.5)
+
         if stream == "fac":
             data = {"eyeAct": "lookD", "uAct": "surprise", "uPow": 0.0, "lAct": "neutral", "lPow": 0.0446911528706551}
         if stream in SEND_FUNCTIONS:
