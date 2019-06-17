@@ -10,6 +10,7 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
   * [Docs](#docs)
   
 ## Requirements
+  EMOTIV headset (Epoc+/Insight)<br />
   Python 3.X, tested with 3.7<br />
   Cortex Service, Cortex 2.X is not supported yet. <br />
   InfluxDB<br />
