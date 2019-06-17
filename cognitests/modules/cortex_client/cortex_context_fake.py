@@ -48,7 +48,7 @@ def subscribe_listener(stream, headset_id, stop_event):
                 for w in waves:
                     sensor_wave = s + "/" + w
                     if sensor_wave in data:
-                        if random.random() > 0.5 and data[sensor_wave] <= 3 or data[sensor_wave] <= 0.1:
+                        if random.random() > 0.5 and data[sensor_wave] <= 3 or data[sensor_wave] <= 0.2:
                             data[sensor_wave] += random.normalvariate(0.1, 0.05)
                         else:
                             data[sensor_wave] -= random.normalvariate(0.1, 0.05)

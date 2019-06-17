@@ -67,7 +67,7 @@ exe = EXE(pyz,
           strip=False,
           upx=False,
           console=True,
-          uac_admin=True,
+          #uac_admin=True,
           icon='../cognitests/static/img/brainBlue.ico')
 
 COLLECT(exe,

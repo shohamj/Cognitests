@@ -12,7 +12,6 @@ import cognitests.modules.import_export as import_export
 from cognitests import app, socketio, db, APP_ROOT
 from cognitests.models import Task, Subject, Instructions
 from cognitests.modules import influxdbAPI as influx, exportAnlaysis as exportAnlaysis, CEFPython
-from cognitests.modules.CortexService import startCortex, stopCortex
 from cognitests.modules.cortex_client import Streams
 from cognitests.modules.cortex_client import set_send, subscribe, get_last_headset
 from cognitests.modules.tasks import EyesTask, start_task, IAPSTask, NBackTask
@@ -428,7 +427,7 @@ def main():
                               "cognitests\static\img/brainBlue.ico"))
 
     t1.start()
-    startCortex()
+    # startCortex()
     influx.start_influx()
     db.create_all()
     waitToLocalServer(open_port)
@@ -436,6 +435,5 @@ def main():
     pygame.display.quit()
     t1.join()
     t2.join()
-
     influx.close_influx()
-    stopCortex()
+    #stopCortex()

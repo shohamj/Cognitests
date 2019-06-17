@@ -31,13 +31,13 @@
                   <form action="/chooseTask/send/nback" method="POST">
                     <div class="form-group">
                       <p class="lead" for="task">Select a task</p>
-                      <select style="width:100%" class="selectpicker" id="task" data-live-search="true" name="task">
+                      <select style="width:100%" class="selectpicker"  data-live-search="true" name="task">
                        {% for task in nback_tasks %}
                         <option value={{ task.id }}>{{ task.name }}</option>
                        {% endfor %}
                       </select>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-md">Choose selected task</button>
+                    <button type="submit"  class="btn btn-primary btn-md" {{ 'disabled' if nback_tasks|length < 1 }}>Choose selected task</button>
             </form>
             </div>
             <div class="tab-pane fade" id="tab-eyes" role="tabpanel" aria-labelledby="nav-eyes-tab">
@@ -45,13 +45,13 @@
                   <form action="/chooseTask/send/eyes" method="POST">
                     <div class="form-group">
                       <p class="lead" for="task">Select a task</p>
-                      <select style="width:100%" class="selectpicker" id="task" data-live-search="true" name="task">
+                      <select style="width:100%" class="selectpicker"  data-live-search="true" name="task">
                        {% for task in eyes_tasks %}
                         <option value={{ task.id }}>{{ task.name }}</option>
                        {% endfor %}
                       </select>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-md">Choose selected task</button>
+                    <button type="submit" class="btn btn-primary btn-md" {{ 'disabled' if eyes_tasks|length < 1 }}>Choose selected task</button>
             </form>
             </div>
             <div class="tab-pane fade" id="tab-iaps" role="tabpanel" aria-labelledby="nav-iaps-tab">
@@ -59,13 +59,13 @@
                   <form action="/chooseTask/send/iaps" method="POST">
                     <div class="form-group">
                       <p class="lead" for="task">Select a task</p>
-                      <select style="width:100%" class="selectpicker" id="task" data-live-search="true" name="task">
+                      <select style="width:100%" class="selectpicker"  data-live-search="true" name="task">
                        {% for task in iaps_tasks %}
                         <option value={{ task.id }}>{{ task.name }}</option>
                        {% endfor %}
                       </select>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-md">Choose selected task</button>
+                    <button type="submit" class="btn btn-primary btn-md" {{ 'disabled' if iaps_tasks|length < 1 }}>Choose selected task</button>
             </form>
             </div>
         </div>

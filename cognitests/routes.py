@@ -1,6 +1,6 @@
 import time
 
-from flask import request, redirect, url_for, render_template, send_from_directory, jsonify
+from flask import request, redirect, render_template, send_from_directory, jsonify
 
 import cognitests
 from cognitests import app, db, socketio
@@ -37,6 +37,9 @@ def createSubject(under=None):
     try:
         global subject_id
         if request.method == 'POST':
+            ret = Subject.query.filter(Subject.serial == request.form['serial']).first()
+            if ret:
+                return jsonify({"success": False, "error": "A subject with that serial number already exists!"})
             subject = Subject(name=request.form['name'],
                               serial=request.form['serial'],
                               age=request.form['age'],
@@ -52,16 +55,14 @@ def createSubject(under=None):
             for group in groups:
                 db.session.add(PartOfGroup(group_id=group, subject_id=subject_id))
             db.session.commit()
-            if under == '_':
-                return redirect(url_for('task'))
-            else:
-                return redirect('/')
+            return jsonify({"success": True})
 
         else:
             groups = Group.query.all()
             return render_template("createSubject.html", inTask=under, groups=groups)
     except Exception as e:
         print("create user error:", e)
+        return jsonify({"success": False, "error": str(e)})
 
 
 @app.route('/createGroup/', methods=['GET'])
@@ -110,6 +111,9 @@ def createTask(type=None):
         new_task = None
         if type == "nback":
             try:
+                ret = NbackSettings.query.filter(NbackSettings.name == request.form['name']).first()
+                if ret:
+                    return jsonify({"success": False, "error": "NBack task with that name already exists!"})
                 new_task = NbackSettings(
                     name=request.form['name'],
                     nback=request.form['nback'],
@@ -123,8 +127,13 @@ def createTask(type=None):
                 db.session.commit()
             except Exception as e:
                 print("My error:", e)
+                return jsonify({"success": False, "error": str(e)})
+
         elif type == 'eyes':
             try:
+                ret = EyesSettings.query.filter(EyesSettings.name == request.form['name']).first()
+                if ret:
+                    return jsonify({"success": False, "error": "Eyes task with that name already exists!"})
                 new_task = EyesSettings(
                     name=request.form['name'],
                     rounds=request.form['rounds'],
@@ -138,8 +147,13 @@ def createTask(type=None):
                 db.session.commit()
             except Exception as e:
                 print("My error:", e)
+                return jsonify({"success": False, "error": str(e)})
+
         elif type == 'iaps':
             try:
+                ret = IAPSSettings.query.filter(IAPSSettings.name == request.form['name']).first()
+                if ret:
+                    return jsonify({"success": False, "error": "IAPS task with that name already exists!"})
                 print(request.form)
                 rounds = request.form.getlist('rounds[]')
                 rounds = " ".join(str(x) for x in rounds)
@@ -158,7 +172,9 @@ def createTask(type=None):
                 db.session.commit()
             except Exception as e:
                 print("My error:", e)
-        return "created"
+                return jsonify({"success": False, "error": str(e)})
+
+        return jsonify({"success": True})
     if request.method == 'GET':
         ins = Instructions.query.all()
         return render_template("createTaskV2.html", instructions=ins)
@@ -265,6 +281,9 @@ def editTask(type=None):
         if type == "nback":
             id = request.form['task']
             task_to_update = NbackSettings.query.get(id)
+            ret = NbackSettings.query.filter(NbackSettings.name == request.form['name']).first()
+            if ret and request.form['name'] != task_to_update.name:
+                return jsonify({"success": False, "error": "N-Back task with that name already exists!"})
             task_to_update.name = request.form['name']
             task_to_update.words = request.form['words']
             task_to_update.nback = request.form['nback']
@@ -275,6 +294,9 @@ def editTask(type=None):
         elif type == 'eyes':
             id = request.form['task']
             task_to_update = EyesSettings.query.get(id)
+            ret = EyesSettings.query.filter(EyesSettings.name == request.form['name']).first()
+            if ret and request.form['name'] != task_to_update.name:
+                return jsonify({"success": False, "error": "Eyes task with that name already exists!"})
             task_to_update.name = request.form['name']
             task_to_update.rounds = request.form['rounds']
             task_to_update.open_time = request.form['open_time']
@@ -291,6 +313,9 @@ def editTask(type=None):
             rounds = " ".join(str(x) for x in rounds)
             id = request.form['task']
             task_to_update = IAPSSettings.query.get(id)
+            ret = IAPSSettings.query.filter(IAPSSettings.name == request.form['name']).first()
+            if ret and request.form['name'] != task_to_update.name:
+                return jsonify({"success": False, "error": "IAPS task with that name already exists!"})
             task_to_update.name = request.form['name']
             task_to_update.rest = request.form['rest']
             task_to_update.mask_duration = request.form['mask_duration']
@@ -300,7 +325,7 @@ def editTask(type=None):
             task_to_update.rounds = rounds
             task_to_update.instructions = request.form['instructions']
         db.session.commit()
-        return "edited"
+        return jsonify({"success": True})
     if request.method == 'GET':
         nbackTasks = NbackSettings.query.all()
         eyesTasks = EyesSettings.query.all()
@@ -372,6 +397,9 @@ def deleteTask(type):
 def editSubject():
     if request.method == 'POST':
         subject = Subject.query.get(request.form['subject'])
+        ret = Subject.query.filter(Subject.serial == request.form['serial']).first()
+        if ret and request.form['serial'] != subject.serial:
+            return jsonify({"success": False, "error": "A subject with that serial number already exists!"})
         subject.name = request.form['name']
         subject.serial = request.form['serial']
         subject.age = request.form['age']
@@ -383,7 +411,7 @@ def editSubject():
         for group in groups:
             db.session.add(PartOfGroup(group_id=group, subject_id=subject.id))
         db.session.commit()
-        return redirect('/editSubject')
+        return jsonify({"success": True})
     if request.method == 'GET':
         subjects = Subject.query.all()
         groups = Group.query.all()
@@ -536,7 +564,7 @@ def exportTasksData():
 
 @app.route('/fullScreenOn')
 def fullScreenOn():
-    return "fullScreenOn"  # Disabling fullscreen toggle for presentation
+    # return "fullScreenOn"  # Disabling fullscreen toggle for presentation
     try:
         CEFPython.toggleFullscreen(True)
     except:
@@ -546,7 +574,7 @@ def fullScreenOn():
 
 @app.route('/fullScreenOff')
 def fullScreenOff():
-    return "fullScreenOff"  # Disabling fullscreen toggle for presentation
+    #return "fullScreenOff"  # Disabling fullscreen toggle for presentation
     CEFPython.toggleFullscreen(False)
     return "fullScreenOff"
 

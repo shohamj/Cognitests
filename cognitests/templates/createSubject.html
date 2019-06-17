@@ -58,7 +58,11 @@
     {% endblock %}
 </form>
 <script>
+
 function clearAll(){
+     try{
+       $('#subject').find(":selected").html($("#name").val() + ", " +$("#serial").val());
+     }catch{}
      $('.form-control').val("");
      $('#group_id').val([]);
      $('#group_id').change();
@@ -67,6 +71,8 @@ function clearAll(){
         $('#subject').selectpicker("refresh");
      }catch{}
 }
+
+
 $("#form").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
@@ -78,14 +84,34 @@ $("#form").submit(function (e) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(){
-            clearAll();
-            showAlert("Successes!", "Subject created successfully");
+        success: function(data){
+            if(data.success){
+                clearAll();
+                showAlert("Success!", "Subject created successfully");
+                }
+            else
+                showAlert("ERROR!", data.error,"danger");
         },
         error: function (e) {
             // showError("Adding failed!", e)
         }
     });
    });
+function setInputFilter(textbox, inputFilter) {
+  ["input", "keydown", "keyup", "mousedown", "mouseup", "select", "contextmenu", "drop"].forEach(function(event) {
+    textbox.addEventListener(event, function() {
+      if (inputFilter(this.value)) {
+        this.oldValue = this.value;
+        this.oldSelectionStart = this.selectionStart;
+        this.oldSelectionEnd = this.selectionEnd;
+      } else if (this.hasOwnProperty("oldValue")) {
+        this.value = this.oldValue;
+        this.setSelectionRange(this.oldSelectionStart, this.oldSelectionEnd);
+      }
+    });
+  });
+}
+setInputFilter(document.getElementById("serial"), function(value) {
+  return /^\d*$/.test(value) && value.length < 10; });
 </script>
 {% endblock %}

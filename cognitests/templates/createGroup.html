@@ -27,7 +27,14 @@
 </form>
 <script>
 function clearAll(){
+    try{
+       $('#group').find(":selected").html($("#groupName").val());
+     }catch{}
      $('.form-control').val("");
+    try {
+        $('#group').prop('selectedIndex',-1);
+        $('#group').selectpicker("refresh");
+    }catch{}
 }
 $("#form").submit(function (e) {
     e.preventDefault();

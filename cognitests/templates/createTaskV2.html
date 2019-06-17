@@ -42,7 +42,7 @@
                       </div>
                       <div class="form-group">
                           <p for="nback_instructions">Instructions</p>
-                          <select style="width:100%" class="selectpicker" id="nback_instructions" data-live-search="true" name="instructions" title="Choose instructions page...">
+                          <select required style="width:100%" class="selectpicker" id="nback_instructions" data-live-search="true" name="instructions" title="Choose instructions page...">
                           {% for ins in instructions %}
                           <option value={{ ins.id }}>{{ ins.name }}</option>
                           {% endfor %}
@@ -82,11 +82,11 @@
                     {% endblock %}
                       <div class="form-group">
                         <label for="name">Task name</label>
-                        <input type="text" name="name" class="form-control" id="eyes_name" aria-describedby="nameHelp" placeholder="Enter Task Name">
+                        <input required type="text" name="name" class="form-control" id="eyes_name" aria-describedby="nameHelp" placeholder="Enter Task Name">
                       </div>
                       <div class="form-group">
                           <p  for="eyes_instructions">Instructions</p>
-                          <select style="width:100%" class="selectpicker" id="eyes_instructions" data-live-search="true" name="instructions" title="Choose instructions page...">
+                          <select required style="width:100%" class="selectpicker" id="eyes_instructions" data-live-search="true" name="instructions" title="Choose instructions page...">
                           {% for ins in instructions %}
                           <option value={{ ins.id }}>{{ ins.name }}</option>
                           {% endfor %}
@@ -147,11 +147,11 @@
                     {% endblock %}
                       <div class="form-group">
                         <label for="name">Task name</label>
-                        <input type="text" id="iaps_name"  name="name" class="form-control" id="iaps_name" aria-describedby="nameHelp" placeholder="Enter Task Name">
+                        <input required type="text" id="iaps_name"  name="name" class="form-control" id="iaps_name" aria-describedby="nameHelp" placeholder="Enter Task Name">
                       </div>
                       <div class="form-group">
                           <p for="instructions">Instructions</p>
-                          <select style="width:100%" class="selectpicker" id="iaps_instructions" data-live-search="true" name="instructions" title="Choose instructions page...">
+                          <select required style="width:100%" class="selectpicker" id="iaps_instructions" data-live-search="true" name="instructions" title="Choose instructions page...">
                           {% for ins in instructions %}
                           <option value={{ ins.id }}>{{ ins.name }}</option>
                           {% endfor %}
@@ -161,30 +161,30 @@
                       </div>
                       <div class="form-group">
                         <label>Fixation duration (In seconds)</label>
-                        <input type="number" step="0.001" name="fixation" class="form-control" id="iaps_fixation" aria-describedby="nameHelp" placeholder="Enter fixation duration...">
+                        <input required type="number" step="0.001" name="fixation" class="form-control" id="iaps_fixation" aria-describedby="nameHelp" placeholder="Enter fixation duration...">
                       </div>
                       <div class="form-group">
                         <label>Rest duration (In seconds)</label>
-                        <input type="number" step="0.001" name="rest"  class="form-control" id="iaps_rest"  placeholder="Enter rest duration...">
+                        <input required type="number" step="0.001" name="rest"  class="form-control" id="iaps_rest"  placeholder="Enter rest duration...">
                       </div>
                       <div class="form-group">
                         <label for="name">Images directory name. <a href="#dir_explained" data-toggle="modal" data-target="#dir_explained">Explanation</a></label>
-                        <input type="text"  name="dir" class="form-control" id="iaps_images_path" aria-describedby="nameHelp" placeholder="Enter images directory name...">
+                        <input required type="text"  name="dir" class="form-control" id="iaps_images_path" aria-describedby="nameHelp" placeholder="Enter images directory name...">
                       </div>
                       <div class="form-group">
                         <label for="name">Mask image name (move the mask file <a href="#" onclick="return openDir('DBS/images/masks')" class=alert-link">here</a>)</label>
-                        <input type="text"  name="mask" class="form-control" id="iaps_mask" aria-describedby="nameHelp" placeholder="Enter mask name...">
+                        <input required type="text"  name="mask" class="form-control" id="iaps_mask" aria-describedby="nameHelp" placeholder="Enter mask name...">
                       </div>
                        <div class="form-group">
                         <label>Mask duration (In seconds)</label>
-                        <input type="number" step="0.001" name="mask_duration"  class="form-control" id="iaps_mask_duration"  placeholder="Enter mask duration...">
+                        <input required type="number" step="0.001" name="mask_duration"  class="form-control" id="iaps_mask_duration"  placeholder="Enter mask duration...">
                       </div>
                         {# {% include "includes/_IAPSImages.html" %} #}
                         <div class="form-group multiple-form-group">
 				            <label>Add rounds ( free-time if time &lt;= 0 )</label>
 
 				            <div class="form-group input-group">
-					            <input type="number" step="0.001" name="rounds[]" placeholder="Enter round's display time (seconds)..." class="form-control">
+					            <input required type="number" step="0.001" name="rounds[]" placeholder="Enter round's display time (seconds)..." class="form-control">
 						            <span class="input-group-btn"><button type="button" class="btn btn-secondary btn-add">+
 						        </button></span>
 				            </div>
@@ -285,6 +285,9 @@ function updateTextHelper() {
 </script>
 <script>
 function clearAll_Nback(){
+    try{
+       $('#nbackTask').find(":selected").html($("#nback_name").val());
+     }catch{}
      $('.form-control').val("");
      try {
         $('#nbackTask').prop('selectedIndex', -1);
@@ -294,6 +297,9 @@ function clearAll_Nback(){
      }catch{}
   }
 function clearAll_Eyes(){
+     try{
+       $('#eyesTask').find(":selected").html($("#eyes_name").val());
+     }catch{}
      $('.form-control').val("");
      $('.custom-file-label').html("Choose sound file...");
      $('audio').attr("src", "");
@@ -307,6 +313,9 @@ function clearAll_Eyes(){
 
 }
 function clearAll_IAPS(){
+     try{
+       $('#iapsTask').find(":selected").html($("#iaps_name").val());
+     }catch{}
      $('.form-control').val("");
      $(".btn-remove").closest('.form-group').remove();
      try {
@@ -321,7 +330,7 @@ $("#nbackForm").submit(function (e) {
         return false;
     e.preventDefault();
     var formData = new FormData(this);
-    // showMSG("Adding new flower...","This message will disapear once the flower is added.")
+    
     console.log(formData);
     $.ajax({
         type: "POST",
@@ -329,9 +338,13 @@ $("#nbackForm").submit(function (e) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(){
-            clearAll_Nback();
-            showAlert("Successes!", "N-Back task created successfully");
+        success: function(data){
+            if(data.success){
+                clearAll_Nback();
+                showAlert("Successes!", "N-Back task created successfully");
+            }
+            else
+                showAlert("ERROR!", data.error,"danger");
         },
         error: function (e) {
             // showError("Adding failed!", e)
@@ -341,7 +354,6 @@ $("#nbackForm").submit(function (e) {
 $("#eyesForm").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    // showMSG("Adding new flower...","This message will disapear once the flower is added.")
     console.log(formData);
     $.ajax({
         type: "POST",
@@ -349,9 +361,13 @@ $("#eyesForm").submit(function (e) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(){
-            clearAll_Eyes();
-            showAlert("Successes!", "Eyes task created successfully");
+        success: function(data){
+            if(data.success){
+                clearAll_Eyes();
+                showAlert("Successes!", "Eyes task created successfully");
+            }
+            else
+                showAlert("ERROR!", data.error,"danger");
         },
         error: function (e) {
             // showError("Adding failed!", e)
@@ -361,7 +377,6 @@ $("#eyesForm").submit(function (e) {
 $("#iapsForm").submit(function (e) {
     e.preventDefault();
     var formData = new FormData(this);
-    // showMSG("Adding new flower...","This message will disapear once the flower is added.")
     console.log(formData);
     $.ajax({
         type: "POST",
@@ -369,9 +384,13 @@ $("#iapsForm").submit(function (e) {
         data: formData,
         processData: false,
         contentType: false,
-        success: function(){
-            clearAll_IAPS();
-            showAlert("Successes!", "IAPS task created successfully");
+        success: function(data){
+            if(data.success){
+                clearAll_IAPS();
+                showAlert("Successes!", "IAPS task created successfully");
+            }
+            else
+                showAlert("ERROR!", data.error,"danger");
         },
         error: function (e) {
             // showError("Adding failed!", e)

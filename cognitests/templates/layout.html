@@ -19,11 +19,12 @@
 
     <link rel="shortcut icon" href="{{ url_for('static',filename='img/brainBlue.png') }}" type="image/x-icon">
 <script>
-function showAlert(bold,regular) {
-    $("#success-alert").html("<strong>"+ bold + "&nbsp;</strong>"+ regular);
-                $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
-               $("#success-alert").slideUp(500);
-                });
+function showAlert(bold,regular,type="success") {
+    $("#alert-msg").html('<div class="alert alert-' +type + '"><strong>'+ bold + '&nbsp;</strong>'+ regular + '</div>');
+               $("#alert-msg").fadeTo(2000, 500).slideUp(500, function(){
+                   if (type=="success")
+                    $("#alert-msg").slideUp(500);
+               });
 }
 </script>
     <title>Cognitests</title>
@@ -48,8 +49,7 @@ function showAlert(bold,regular) {
   <body>
   {% block navbar %}{% endblock %}
     <main role="main" class="container">
-    <div class="alert alert-success sticky-top" id="success-alert" style="display:none;">
-    <button type="button" class="close" data-dismiss="alert">x</button>
+    <div id='alert-msg' class="sticky-top" style="display: none"></div>
     <strong> </strong>
 </div>
         {% block body %}
