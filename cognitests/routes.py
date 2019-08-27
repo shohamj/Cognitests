@@ -202,14 +202,16 @@ def loadTask():
 def data(headsetID=None):
     print("data")
     if headsetID:
+        distime = time.time()
         set_send(Streams.DEV.value, sendContactQuality)
         set_send(Streams.POW.value, sendBandPower)
         cognitests.STOP_DEV = subscribe(Streams.DEV.value, headsetID)
         cognitests.STOP_POW = subscribe(Streams.POW.value, headsetID)
-        headset = headsetID.split('-')[0]
+        headset = headsetID.split('-')[0].lower()
+        devcols = queryHeadsets(headsetID)[0]["sensors"]
         print(headset.lower())
-        return render_template("dataV2_d.html", headset=headset.lower(), devcols=queryHeadsets(headsetID)[0]["sensors"],
-                               showbtns=True)
+        print("data:", time.time() - distime)
+        return render_template("dataV2_d.html", headset=headset, devcols=devcols, showbtns=True)
     else:
         headset = get_last_headset().split('-')[0]
         return render_template("dataV2_d.html", headset=headset.lower(),

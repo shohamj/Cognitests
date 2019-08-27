@@ -297,7 +297,7 @@ def saveFile(input, files, dir):
                 file_name = str(time.time()) + "_" + file.filename.replace(' ', '_') + ' '
                 res += file_name
                 try:
-                    file.save(os.path.join(APP_ROOT + '/DBS/' + dir, file_name))
+                    file.save(os.path.join(APP_ROOT + '/../DBS/' + dir, file_name))
                 except Exception as e:
                     print("saveFile", e)
     return res
@@ -346,8 +346,12 @@ def shutdown_server():
 
 def instructionToDict(ins_id):
     print("id:", ins_id)
-    ins = Instructions.query.get(ins_id)
-    return {"title": ins.title, "paragraphs": ins.paragraphs.split("***END***")[:-1]}
+    try:
+        ins = Instructions.query.get(ins_id)
+        return {"title": ins.title, "paragraphs": ins.paragraphs.split("***END***")[:-1]}
+    except:
+        return {"title": "No instructions page was selected!", "paragraphs": []}
+
 
 
 def generateNBackTask(selected_task):

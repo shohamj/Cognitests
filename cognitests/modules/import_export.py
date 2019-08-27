@@ -246,6 +246,7 @@ def exportSettings(settings=[], filename="default"):
         if s:
             s = s.as_dict()
             s["type"] = task["type"]
+
             data["settings"].append(s)
     with open(os.path.join(dir, "../../Exports/settings/" + filename + '.json'), "w") as jsonFile:
         json.dump(data, jsonFile)
