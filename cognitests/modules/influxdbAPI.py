@@ -17,7 +17,7 @@ def start_influx(open_port=None):
     global influx_server, myclient
     influxdEXE = os.path.abspath(path + "/../../influxdb/influxd.exe")
     influxdCONF = os.path.abspath(path + "/../../influxdb/influxdb.conf")
-    print(influxdEXE)
+    print(influxdEXE, "-config", influxdCONF)
     influx_server = subprocess.Popen(
         [influxdEXE, "-config", influxdCONF],
         shell=False)

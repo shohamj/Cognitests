@@ -418,26 +418,29 @@ def waitToLocalServer(port):
 
 def main():
     import pygame
+    from multiprocessing import Process
+
     from cognitests.modules.splashScreen import splash
     checkDatabaseFiles()
     pygame.mixer.init()
-    splash("cognitests/static/img/brainBlue.png")
+    #splash("cognitests/static/img/brainBlue.png")
     open_port = get_open_port()
-
-    t1 = threading.Thread(target=socketio.run, args=(app,), kwargs={'port': open_port})
-    t2 = threading.Thread(target=CEFPython.startWindow,
+    print("Running on port:", open_port)
+    t = threading.Thread(target=socketio.run, args=(app,), kwargs={'port': open_port})
+    p = Process(target=CEFPython.startWindow,
                           args=(
                               'http://127.0.0.1:' + str(open_port), "Cognitests",
                               "cognitests\static\img/brainBlue.ico"))
 
-    t1.start()
+    p.start()
+    t.start()
     # startCortex()
     influx.start_influx()
     db.create_all()
-    waitToLocalServer(open_port)
-    t2.start()
+    #waitToLocalServer(open_port)
+    # t2.start()
     pygame.display.quit()
-    t1.join()
-    t2.join()
+    t.join()
+    p.join()
     influx.close_influx()
     #stopCortex()

@@ -12,11 +12,22 @@ import threading
 import urllib.request
 import win32api
 import win32gui
-
 import win32con
 from cefpython3 import cefpython as cef
 
 BROWSER = None
+RUNNING = True
+
+
+class KeyboardHandler(object):
+    def OnKeyEvent(self, browser, event, event_handle):
+        print(event)
+        # F11 - Open full screen
+        if event['windows_key_code'] == 122 and not browser.IsFullscreen():
+            browser.ToggleFullscreen()
+        # ESC - Close full screen
+        if event['windows_key_code'] == 27 and browser.IsFullscreen():
+            browser.ToggleFullscreen()
 
 
 def startWindow(url, title, icon="resources/chromium.ico"):
@@ -28,6 +39,7 @@ def startWindow(url, title, icon="resources/chromium.ico"):
                                         window_info=window_info,
                                         window_title=title,
                                         settings={"file_access_from_file_urls_allowed": True})
+        BROWSER.SetClientHandler(KeyboardHandler())
         window_handle = BROWSER.GetOuterWindowHandle()
         print(BROWSER.IsWindowRenderingDisabled())
         print("icon", os.path.abspath(icon))
@@ -82,6 +94,7 @@ def setWindowIcon(window_handle, icon):
 
 
 def onExit(url):
+    RUNNING = False
     try:
         urllib.request.urlopen(url + '/_shutdown')
     except:
