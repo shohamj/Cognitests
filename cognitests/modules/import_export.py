@@ -11,27 +11,27 @@ from cognitests.modules.influxdbAPI import insertjson
 dir = os.path.dirname(__file__)
 
 
-def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export_csv=False):
+def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export_csv=False, log=print):
     path = []
     if not os.path.exists("Exports/data/"):
         os.makedirs("Exports/data/")
     if export_zip:
         data_list = []
-        for id in tasks_ids:
+        for index, id in enumerate(tasks_ids):
+            log("Exporting task {} of {} into the ZIP file".format(index+1, len(tasks_ids)))
             task_data = check_output(
                 ["influxdb\influx.exe", "-database", "Tasks", "-execute", "select * from task" + str(id), "-format",
                  "json"])
             task_data = json.loads(task_data)
-            print(task_data)
             t = Task.query.get(id).as_dict()
             s = Subject.query.get(t['subject_id']).as_dict()
             g = db.session.query(PartOfGroup.group_id).filter_by(subject_id=t['subject_id']).all()
-            print(g)
             data = task_data["results"][0]
             data["task"] = t
             data["subject"] = s
             data["groups"] = g
             data_list.append(data)
+        log("Saving the ZIP file...")
         with open("Exports/data/" + filename + '.json', "w") as jsonFile:
             json.dump(data_list, jsonFile)
         zip = zipfile.ZipFile("Exports/data/" + filename + '.zip', 'w')
@@ -40,11 +40,13 @@ def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export
             os.remove(os.path.join(dir, "../../Exports/data/" + filename + '.json'))
         else:
             print("ERROR")
+        log("ZIP file was saved!")
         path.append(os.path.abspath(os.path.join(dir, "../../Exports/data/" + filename + '.zip')))
     if export_csv:
         if not os.path.exists("Exports/data/" + filename):
             os.makedirs("Exports/data/" + filename)
-        for id in tasks_ids:
+        for index, id in enumerate(tasks_ids):
+            log("Exporting CSV {} of {}".format(index+1, len(tasks_ids)))
             s = Subject.query.get(Task.query.get(id).subject_id)
             t = Task.query.get(id).start_time
             csv_path = os.path.join(dir, "../../Exports/data/" + filename + "/" + s.serial + "--" + time.strftime(
@@ -56,7 +58,7 @@ def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export
             f.close()
             from cognitests.modules.fixExcel import utf_to_windows
             utf_to_windows(csv_path)
-
+        log("Done!")
         path.append(os.path.abspath(os.path.join(dir, "../../Exports/data/" + filename)))
 
     return path

@@ -21,7 +21,7 @@ RUNNING = True
 
 class KeyboardHandler(object):
     def OnKeyEvent(self, browser, event, event_handle):
-        print(event)
+        # print(event)
         # F11 - Open full screen
         if event['windows_key_code'] == 122 and not browser.IsFullscreen():
             browser.ToggleFullscreen()

@@ -65,12 +65,12 @@ def exportNBackTaskAnalysis(wb, sheet_name, task_id, round=None):
     sensors = influx.getTaskSensors("task" + str(task_id))
     data_rest = influx.getTaskMeansByStatus("task" + str(task_id), "rest", round=round)
     createTable("Rest", wb, ws, start_index, waves, sensors, data_rest)
-    data_between = influx.getTaskMeansByStatus("task" + str(task_id), "between", round=round)
-    createTable("Between", wb, ws, (start_index[0] + len(sensors) + 3, start_index[1]), waves, sensors, data_between)
+    data_fixation = influx.getTaskMeansByStatus("task" + str(task_id), "fixation", round=round)
+    createTable("Fixation - Plus Sign", wb, ws, (start_index[0] + len(sensors) + 3, start_index[1]), waves, sensors, data_fixation)
     data_targets = influx.getTaskMeansByStatus("task" + str(task_id), "target", round=round)
     createTable("Targets", wb, ws, (start_index[0], start_index[1] + len(waves) + 3), waves, sensors, data_targets)
-    data_non_targets = influx.getTaskMeansByStatus("task" + str(task_id), "no-target", round=round)
-    createTable("Non-Targets", wb, ws, (start_index[0] + len(sensors) + 3, start_index[1] + len(waves) + 3), waves,
+    data_non_targets = influx.getTaskMeansByStatus("task" + str(task_id), "two-words", round=round)
+    createTable("Two Words", wb, ws, (start_index[0] + len(sensors) + 3, start_index[1] + len(waves) + 3), waves,
                 sensors, data_non_targets)
     clicks_analysis = influx.getClicksAnalysis("task" + str(task_id), round=round)
     clicks_index = (start_index[0] + 2 * len(sensors) + 6, start_index[1])

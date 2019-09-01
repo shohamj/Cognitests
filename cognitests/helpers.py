@@ -17,9 +17,25 @@ from cognitests.modules.cortex_client import set_send, subscribe, get_last_heads
 from cognitests.modules.tasks import EyesTask, start_task, IAPSTask, NBackTask
 
 
-def writeProgressToConsole(text):
+def writeProgressToExportAnalysisConsole(text):
     with app.app_context():
         socketio.emit('exportTaskAnalysisConsole', text)
+        socketio.sleep(0.1)
+
+
+def writeProgressToExportDataConsole(text):
+    with app.app_context():
+        socketio.emit('exportTasksDataConsole', text)
+        socketio.sleep(0.1)
+
+
+def exportTaskData(tasks, file_name, zip, csv):
+    if not os.path.exists("Exports"):
+        os.makedirs("Exports")
+    print("exportTaskData")
+    path = import_export.export_tasks_data(tasks, file_name, zip, csv,writeProgressToExportDataConsole)
+    with app.app_context():
+        socketio.emit('exportTaskDataDone', {"path": path})
 
 
 def boolToHTMLDisplay(bool):
@@ -128,9 +144,9 @@ def exportTaskAnalysis(tasks, dir_name, task_type):
         for task in tasks:
             sub_id = Task.query.get(int(task["id"])).subject_id
             task["gender"] = Subject.query.get(sub_id).gender
-        exportAnlaysis.exportIAPS(tasks, path, writeProgressToConsole)
+        exportAnlaysis.exportIAPS(tasks, path, writeProgressToExportAnalysisConsole)
     else:
-        exportAnlaysis.export(tasks, path, task_type, writeProgressToConsole)
+        exportAnlaysis.export(tasks, path, task_type, writeProgressToExportAnalysisConsole)
     with app.app_context():
         socketio.emit('exportTaskAnalysisDone', {"path": [path]})
 

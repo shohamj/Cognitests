@@ -8,11 +8,24 @@
 <script src="{{ url_for('static',filename='js/socket.io.js') }}"></script>
 <script>
 var socket = io.connect(location.protocol + '//' + location.host);
+socket.on('exportTasksDataConsole', function(data)
+{
+     $("#console").val($("#console").val() +"\n" +data);
+     $("#console").scrollTop(99999);
+});
+
 function openFile(path)
 {
     socket.emit('openPath', path);
     return false;
 }
+ function changeConsoleButtonText(button){
+      if(button.innerHTML === "Open Console")
+          button.innerHTML = "Close Console";
+      else
+          button.innerHTML = "Open Console";
+
+  }
 socket.on('exportTaskDataDone', function(data)
 {
      $("#btn").removeClass('disabled');
@@ -46,6 +59,7 @@ function exportTasks ()
     $("#btn").addClass('disabled');
     document.getElementById("btn").innerHTML = "Generating export file";
     socket.emit("exportTaskData",indices,file,zip,csv)
+    $("#console").val("Export process will be displayed here...");
 }
 </script>
 {% endblock %}
@@ -70,12 +84,20 @@ function exportTasks ()
     </div>
     <br>
     <button id="btn" class="btn btn-primary btn-md" onclick="exportTasks()">Export</button>
-  </div>
-  <div id="alert" class="alert alert-success alert-dismissible collapse" role="alert" style="margin-top:2vw">
+    <br>
+    <br>
+    <div id="alert" class="alert alert-success alert-dismissible collapse" role="alert" style="margin-top:2vw">
         <h4 class="alert-heading">Export done!</h4>
         <p id="msg"></p>
         <button class="close" onclick="$('#alert').hide()">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
+    <button class="btn btn-secondary" type="button" onclick="changeConsoleButtonText(this)" data-toggle="collapse" data-target="#consoleWrapper" aria-expanded="false" aria-controls="consoleWrapper">Open Console</button>
+    <div class="collapse" id="consoleWrapper" style="margin-top: 5px;">
+        <textarea class="form-control" style="background: black; color:white; font-family:Courier" name="" id="console" cols="100" rows="4" readonly>Export process will be displayed here...</textarea>
+   </div>
+  </div>
+
+
 {% endblock %}

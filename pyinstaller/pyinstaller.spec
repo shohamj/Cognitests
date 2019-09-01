@@ -42,8 +42,8 @@ else:
     cipher_obj = None
 
 a = Analysis(['../run.py'],
-             hiddenimports=['engineio.async_drivers.threading'],
-             datas=[('../cognitests/templates', 'cognitests/templates'), ('../cognitests/static', 'cognitests/static'), ('../influxdb', 'influxdb'),('../EmotivCortexService', 'EmotivCortexService')],
+             hiddenimports=[    ],
+             datas=[('../cognitests/templates', 'cognitests/templates'), ('../cognitests/static', 'cognitests/static'), ('../influxdb', 'influxdb')],
              hookspath=["."],  # To find "hook-cefpython3.py"
              cipher=cipher_obj,
              win_private_assemblies=True,

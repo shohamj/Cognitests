@@ -28,6 +28,7 @@ def queryHeadsets(headset_id: str = None):
         ws.send(req.to_string())
         res = Response.of_json(ws.recv())
         print("Query time:", time.time() - t)
+        print(res.to_string())
         ws.close()
         return res.result
     except Exception as e:

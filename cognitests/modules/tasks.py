@@ -149,13 +149,14 @@ class NBackTask(Task):
     def chooseTargets(self):
         for i in range(0, self.trials_amount, 2):
             self.trials[i].chooseTarget(self.nback)
-        wrong_targets = []
+        # wrong_targets = []
         for i in range(1, self.trials_amount, 2):
             wrong_target = self.trials[i].getWrongTarget(self.nback)
-            wrong_targets.append(wrong_target)
-        random.shuffle(wrong_targets)
-        for i in range(1, self.trials_amount, 2):
-            self.trials[i].chooseTarget(self.nback, wrong_targets.pop())
+            self.trials[i].chooseTarget(self.nback, wrong_target)
+            # wrong_targets.append(wrong_target)
+        # random.shuffle(wrong_targets)
+        # for i in range(1, self.trials_amount, 2):
+        #     self.trials[i].chooseTarget(self.nback, wrong_targets.pop())
 
     def startRound(self):
         global _time
@@ -246,6 +247,7 @@ class NBackTask(Task):
                 self.round = -1
                 self.setContentVisibility(False)
                 self.setWaitVisibility(True)
+                self.evSpaceKeyPressed.clear()
                 self.evSpaceKeyPressed.wait()
                 self.round = 1
                 self.evSpaceKeyPressed.clear()
@@ -256,7 +258,7 @@ class NBackTask(Task):
             self.status = "rest"
             self.evTimer.wait(timeout=self.rest)
             self.setContent("", "+", "")
-            self.status = "between"
+            self.status = "fixation"
             self.evTimer.wait(timeout=self.timeout)
             while True and self.isAlive:
                 json = self.next()
@@ -268,7 +270,7 @@ class NBackTask(Task):
                     self.countClick = True
                     self.status = "target"
                 else:
-                    self.status = "no-target"
+                    self.status = "two-words"
                 self.jsonSetContent(json)
                 delay_start_time = time.time()
                 self.click = {"clicked": False, "delay": -1.0, "target": None, "is_correct": False,
@@ -301,7 +303,7 @@ class NBackTask(Task):
                         except Exception as e:
                             print("ERROR!!!", e)
 
-                self.status = "between"
+                self.status = "fixation"
                 self.setContent("", "+", "")
                 self.evTimer.wait(timeout=self.timeout)
 

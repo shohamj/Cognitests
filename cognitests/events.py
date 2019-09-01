@@ -4,7 +4,7 @@ import threading
 
 import cognitests
 from cognitests import socketio, db
-from cognitests.helpers import exportTaskAnalysis, importTasksData
+from cognitests.helpers import exportTaskAnalysis, importTasksData, exportTaskData
 from cognitests.models import Task, NbackSettings, EyesSettings, IAPSSettings, Group, Subject
 from cognitests.modules import influxdbAPI as influx, import_export as import_export
 
@@ -57,15 +57,12 @@ def evEmotionChosen(emotion):
 
 
 @socketio.on('exportTaskData')
-def exportTaskData(tasks, file_name, zip, csv):
-    if not os.path.exists("Exports"):
-        os.makedirs("Exports")
-    path = import_export.export_tasks_data(tasks, file_name, zip, csv)
-    socketio.emit('exportTaskDataDone', {"path": path})
-
+def exportTaskDataEvent(tasks, file_name, zip, csv):
+    threading.Thread(target=exportTaskData, args=(tasks, file_name, zip, csv)).start()
+    # exportTaskData(tasks, file_name, zip, csv)
 
 @socketio.on('exportTaskAnalysis')
-def exportTaskDataEvent(tasks, dir_name, task_type):
+def exportTaskAnalysisEvent(tasks, dir_name, task_type):
     threading.Thread(target=exportTaskAnalysis, args=(tasks, dir_name, task_type)).start()
 
 
