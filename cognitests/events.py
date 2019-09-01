@@ -4,7 +4,7 @@ import threading
 
 import cognitests
 from cognitests import socketio, db
-from cognitests.helpers import exportTaskAnalysis, importTasksData, exportTaskData
+from cognitests.helpers import exportTaskAnalysis, importTasksData, exportTaskData, exportSettings,importSettings,exportSubjects,importSubjects
 from cognitests.models import Task, NbackSettings, EyesSettings, IAPSSettings, Group, Subject
 from cognitests.modules import influxdbAPI as influx, import_export as import_export
 
@@ -67,20 +67,14 @@ def exportTaskAnalysisEvent(tasks, dir_name, task_type):
 
 
 @socketio.on('exportSubjects')
-def exportSubjects(subjects, file_name):
-    if not os.path.exists("Exports"):
-        os.makedirs("Exports")
-    path = import_export.exportSubjects(subjects, file_name)
-    socketio.emit('exportSubjectsDone', {"path": path})
+def exportSubjectsEvent(subjects, file_name):
+    threading.Thread(target=exportSubjects, args=(subjects, file_name)).start()
+
 
 
 @socketio.on('exportSettings')
-def exportSettings(settings, file_name):
-    if not os.path.exists("Exports"):
-        os.makedirs("Exports")
-    path = import_export.exportSettings(settings, file_name)
-    print(path)
-    socketio.emit('exportSettingsDone', {"path": path})
+def exportSettingsEvent(settings, file_name):
+    threading.Thread(target=exportSettings, args=(settings, file_name)).start()
 
 
 @socketio.on('importTaskData')
@@ -88,30 +82,13 @@ def importTaskData(file_info):
     threading.Thread(target=importTasksData, args=(file_info,)).start()
 
 @socketio.on('importSubjects')
-def importSubjects(file_info):
-    file = file_info['file']
-    name = file_info['name']
-    if not os.path.exists("Exports/tmp"):
-        os.makedirs("Exports/tmp")
-    with open('Exports/tmp/' + name, 'wb') as f:
-        f.write(file)
-    log = import_export.importSubjects('Exports/tmp/' + name)
-    print(log)
-    shutil.rmtree('Exports/tmp', ignore_errors=True)
-    socketio.emit('importSubjectsDone', {'log': log})
+def importSubjectsEvent(file_info):
+    threading.Thread(target=importSubjects, args=(file_info,)).start()
 
 
 @socketio.on('importSettings')
-def importSettings(file_info):
-    file = file_info['file']
-    name = file_info['name']
-    if not os.path.exists("Exports/tmp"):
-        os.makedirs("Exports/tmp")
-    with open('Exports/tmp/' + name, 'wb') as f:
-        f.write(file)
-    log = import_export.importSettings('Exports/tmp/' + name)
-    shutil.rmtree('Exports/tmp', ignore_errors=True)
-    socketio.emit('importSettingsDone', {'log': log})
+def importSettingsEvent(file_info):
+    threading.Thread(target=importSettings, args=(file_info,)).start()
 
 
 @socketio.on('selectedTaskChanged')

@@ -64,27 +64,30 @@ def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export
     return path
 
 
-def import_tasks_data(path):
+def import_tasks_data(path, log=print):
     try:
+        log("Starting the import process...")
         if zipfile.is_zipfile(path):
             archive = zipfile.ZipFile(path, 'r')
             for file in archive.namelist():
                 data = archive.read(file)
                 unzippedjson = json.loads(data.decode("utf-8"))
-                return insert_tasks(unzippedjson)
+                return insert_tasks(unzippedjson, log)
         else:
             with open(path, "r") as jsonFile:
                 data = json.load(jsonFile)
-                return insert_tasks(data)
+                return insert_tasks(data, log)
     except Exception as e:
         print(e)
+        log("Couldn't import: Reason: " + str(e))
         return ["Couldn't import: Reason: " + str(e)]
 
 
-def insert_tasks(tasks):
+def insert_tasks(tasks, console=print):
     log = []
-    for data in tasks:
+    for index, data in enumerate(tasks):
         try:
+            console("Importing task {} of {}...".format(index+1, len(tasks)))
             s = data['subject']
             t = data['task']
             g = []
@@ -109,8 +112,12 @@ def insert_tasks(tasks):
             log.append("Imported: Subject: " + s['name'] + " Started: " + time.strftime('%Y-%m-%d %H:%M:%S',
                                                                                         time.localtime(
                                                                                             t['start_time'])))
+            console("Imported: Subject: " + s['name'] + " Started: " + time.strftime('%Y-%m-%d %H:%M:%S',
+                                                                                        time.localtime(
+                                                                                            t['start_time'])))
         except Exception as e:
             log.append("Couldn't import: " + str(e))
+            console("Couldn't import: " + str(e))
     return log
 
 
@@ -142,16 +149,18 @@ def insert_data(data, task_id):
 # *********************************Subjects*******************************************************
 
 
-def exportSubjects(subjects_ids=[], filename="default"):
+def exportSubjects(subjects_ids=[], filename="default", log=print):
     if not os.path.exists("Exports/subjects/"):
         os.makedirs("Exports/subjects/")
     data = {"subjects": []}
-    for id in subjects_ids:
+    for index, id in enumerate(subjects_ids):
+        log("Exporting subject {} of {}...".format(index + 1, len(subjects_ids)))
         s = Subject.query.get(id)
         s_dict = s.as_dict()
         s_dict["groups"] = db.session.query(PartOfGroup.group_id).filter_by(subject_id=id).all()
         if s:
             data["subjects"].append(s_dict)
+    log("Saving the ZIP file...")
     with open(os.path.join(dir, "../../Exports/subjects/" + filename + '.json'), "w") as jsonFile:
         json.dump(data, jsonFile)
     f = zipfile.ZipFile(os.path.join(dir, "../../Exports/subjects/" + filename + '.zip'), 'w')
@@ -161,10 +170,11 @@ def exportSubjects(subjects_ids=[], filename="default"):
         os.remove(os.path.join(dir, "../../Exports/subjects/" + filename + '.json'))
     else:
         print("ERROR")
+    log("ZIP file was saved!")
     return os.path.abspath(os.path.join(dir, "../../Exports/subjects/" + filename + '.zip'))
 
 
-def importSubjects(path):
+def importSubjects(path, console):
     try:
         if zipfile.is_zipfile(path):
             archive = zipfile.ZipFile(path, 'r')
@@ -172,24 +182,25 @@ def importSubjects(path):
                 data = archive.read(file)
                 unzippedjson = json.loads(data.decode("utf-8"))
                 try:
-                    return insert_subjects(unzippedjson['subjects'])
+                    return insert_subjects(unzippedjson['subjects'], console)
                 except:
                     return ["File is corrupted"]
         else:
             with open(path, "r") as jsonFile:
                 data = json.load(jsonFile)
                 try:
-                    return insert_subjects(data['subjects'])
+                    return insert_subjects(data['subjects'], console)
                 except:
                     return ["File is corrupted"]
     except Exception as e:
         return ["Couldn't import: Reason: " + str(e)]
 
 
-def insert_subjects(data):
+def insert_subjects(data,console):
     log = []
-    for subject in data:
+    for index, subject in enumerate(data):
         try:
+            console("Importing subject {} of {}".format(index+1, len(data)))
             subject.pop('id', None)
             subject.pop('group_id', None)
             groups = subject.pop('groups', None)
@@ -197,8 +208,10 @@ def insert_subjects(data):
             for group in groups:
                 db.session.add(PartOfGroup(group_id=group[0], subject_id=new_id))
             log.append("Imported: Name: " + subject['name'] + " ,Serial: " + subject['serial'])
+            console("Imported: Name: " + subject['name'] + " ,Serial: " + subject['serial'])
         except Exception as e:
             log.append("Couldn't import: " + str(subject) + " Reason: " + str(e))
+            console("Couldn't import: " + str(e))
     db.session.commit()
     return log
 
@@ -219,12 +232,13 @@ def insertSubject(subject, throw=False):
 
 
 # *******************************Task Settings**********************************************************
-def exportSettings(settings=[], filename="default"):
+def exportSettings(settings=[], filename="default", log=print):
     if not os.path.exists("Exports/settings/"):
         os.makedirs("Exports/settings/")
     data = {"settings": []}
     f = zipfile.ZipFile(os.path.join(dir, "../../Exports/settings/" + filename + '.zip'), 'w')
-    for task in settings:
+    for index, task in enumerate(settings):
+        log("Exporting task settings {} of {}...".format(index+1, len(settings)))
         s = None
         if task["type"] == "nback":
             s = NbackSettings.query.get(task["id"])
@@ -250,6 +264,7 @@ def exportSettings(settings=[], filename="default"):
             s["type"] = task["type"]
 
             data["settings"].append(s)
+    log("Saving the ZIP file...")
     with open(os.path.join(dir, "../../Exports/settings/" + filename + '.json'), "w") as jsonFile:
         json.dump(data, jsonFile)
     f.write(os.path.join(dir, "../../Exports/settings/" + filename + '.json'), filename + '.json',
@@ -258,10 +273,11 @@ def exportSettings(settings=[], filename="default"):
         os.remove(os.path.join(dir, "../../Exports/settings/" + filename + '.json'))
     else:
         print("ERROR")
+    log("ZIP file was saved!")
     return os.path.abspath(os.path.join(dir, "../../Exports/settings/" + filename + '.zip'))
 
 
-def importSettings(path):
+def importSettings(path, log):
     try:
         if zipfile.is_zipfile(path):
             archive = zipfile.ZipFile(path, 'r')
@@ -271,19 +287,19 @@ def importSettings(path):
                     unzippedjson = json.loads(data.decode("utf-8"))
                 elif file.startswith('sounds/') or file.startswith('images/'):
                     archive.extract(file, os.path.join(dir, '../../DBS/'))
-            return insertSettings(unzippedjson['settings'])
+            return insertSettings(unzippedjson['settings'], log)
         else:
             with open(path, "r") as jsonFile:
                 data = json.load(jsonFile)
-                return insertSettings(data['settings'])
+                return insertSettings(data['settings'], log)
     except Exception as e:
         return ["Couldn't import: Reason: " + str(e)]
 
 
-def insertSettings(data):
+def insertSettings(data, console):
     log = []
-    for settings in data:
-        print(settings)
+    for index, settings in enumerate(data):
+        console("Importing task settings {} of {}...".format(index+1, len(data)))
         task_type = settings["type"]
         settings.pop('type', None)
         existingSettings = None
@@ -303,8 +319,11 @@ def insertSettings(data):
                 task = IAPSSettings(**settings)
             db.session.add(task)
             log.append("Imported: Name: " + settings['name'])
+            console("Imported: Name: " + settings['name'])
         else:
             log.append(
+                "Couldn't import: Name: " + settings['name'] + ", Reason: There's already a task with this name.")
+            console(
                 "Couldn't import: Name: " + settings['name'] + ", Reason: There's already a task with this name.")
     db.session.commit()
     return log

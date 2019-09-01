@@ -23,20 +23,55 @@ def writeProgressToExportAnalysisConsole(text):
         socketio.sleep(0.1)
 
 
-def writeProgressToExportDataConsole(text):
+def writeToConsole(event, text):
     with app.app_context():
-        socketio.emit('exportTasksDataConsole', text)
+        socketio.emit(event, text)
         socketio.sleep(0.1)
-
 
 def exportTaskData(tasks, file_name, zip, csv):
     if not os.path.exists("Exports"):
         os.makedirs("Exports")
     print("exportTaskData")
-    path = import_export.export_tasks_data(tasks, file_name, zip, csv,writeProgressToExportDataConsole)
+    path = import_export.export_tasks_data(tasks, file_name, zip, csv, lambda text: writeToConsole("exportTasksDataConsole", text))
     with app.app_context():
         socketio.emit('exportTaskDataDone', {"path": path})
 
+def exportSettings(settings, file_name):
+    if not os.path.exists("Exports"):
+        os.makedirs("Exports")
+    path = import_export.exportSettings(settings, file_name,lambda text: writeToConsole("exportTasksSettingsConsole", text))
+    print(path)
+    with app.app_context():
+        socketio.emit('exportSettingsDone', {"path": path})
+
+def importSettings(file_info):
+    file = file_info['file']
+    name = file_info['name']
+    if not os.path.exists("Exports/tmp"):
+        os.makedirs("Exports/tmp")
+    with open('Exports/tmp/' + name, 'wb') as f:
+        f.write(file)
+    log = import_export.importSettings('Exports/tmp/' + name,lambda text: writeToConsole("importTasksSettingsConsole", text))
+    shutil.rmtree('Exports/tmp', ignore_errors=True)
+    socketio.emit('importSettingsDone', {'log': log})
+
+def exportSubjects(subjects, file_name):
+    if not os.path.exists("Exports"):
+        os.makedirs("Exports")
+    path = import_export.exportSubjects(subjects, file_name,lambda text: writeToConsole("exportSubjectsConsole", text))
+    socketio.emit('exportSubjectsDone', {"path": path})
+
+def importSubjects(file_info):
+    file = file_info['file']
+    name = file_info['name']
+    if not os.path.exists("Exports/tmp"):
+        os.makedirs("Exports/tmp")
+    with open('Exports/tmp/' + name, 'wb') as f:
+        f.write(file)
+    log = import_export.importSubjects('Exports/tmp/' + name, lambda text: writeToConsole("importSubjectsConsole", text))
+    print(log)
+    shutil.rmtree('Exports/tmp', ignore_errors=True)
+    socketio.emit('importSubjectsDone', {'log': log})
 
 def boolToHTMLDisplay(bool):
     if bool is True:
@@ -144,9 +179,9 @@ def exportTaskAnalysis(tasks, dir_name, task_type):
         for task in tasks:
             sub_id = Task.query.get(int(task["id"])).subject_id
             task["gender"] = Subject.query.get(sub_id).gender
-        exportAnlaysis.exportIAPS(tasks, path, writeProgressToExportAnalysisConsole)
+        exportAnlaysis.exportIAPS(tasks, path, lambda text: writeToConsole("exportTaskAnalysisConsole", text))
     else:
-        exportAnlaysis.export(tasks, path, task_type, writeProgressToExportAnalysisConsole)
+        exportAnlaysis.export(tasks, path, task_type, lambda text: writeToConsole("exportTaskAnalysisConsole", text))
     with app.app_context():
         socketio.emit('exportTaskAnalysisDone', {"path": [path]})
 
@@ -158,7 +193,7 @@ def importTasksData(file_info):
         os.makedirs("Exports/tmp")
     with open('Exports/tmp/' + name, 'wb') as f:
         f.write(file)
-    log = import_export.import_tasks_data('Exports/tmp/' + name)
+    log = import_export.import_tasks_data('Exports/tmp/' + name,lambda text: writeToConsole("importTasksDataConsole", text))
     try:
         shutil.rmtree('Exports/tmp')
     except Exception as e:
