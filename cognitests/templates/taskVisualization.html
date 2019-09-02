@@ -40,6 +40,7 @@
         <label class="radio-inline"><input type="radio" name="type" onchange="categoryChanged(this)" value="eyes"><p class="lead" for="type" style="margin:0">Eyes Tasks&nbsp;&nbsp;</p></label>
         <label class="radio-inline"><input type="radio" name="type" onchange="categoryChanged(this)" value="iaps"><p class="lead" for="type" style="margin:0"task>IAPS Tasks</p></label>
     </div>
+
 </div>
 <br>
     <div class="row align-items-center" >
@@ -62,7 +63,11 @@
     <div id="myDiv"></div>
     </div>
 
-    <div class="col col-lg-3 additional" id="nback-additional">
+    <div class="col col-lg-3 additional" id="nback-additional" style="margin-top:-50px">
+        <input id="nback-groupByInterval" class="groupByInterval" type="checkbox" onchange="changeMS(this.checked, 'nback')">
+        <label for="nback-groupByInterval">Show one point per X seconds: </label>
+        <input type="number" id="nback-interval" step="1" min="1" style="margin-bottom:10px" value="1" class="form-control" placeholder="Enter seconds...">
+
         <div class="card">
                 <!-- Default panel contents -->
                 <div class="card-header">Choose targets clicks</div>
@@ -101,6 +106,10 @@
          </div>
     </div>
     <div class="col col-lg-3 additional" style="display:none;" id="eyes-additional">
+            <input id="eyes-groupByInterval" class="groupByInterval" type="checkbox" onchange="changeMS(this.checked, 'eyes')" >
+        <label for="eyes-groupByInterval">Show one point per X seconds: </label>
+        <input type="number" id="eyes-interval" step="1" min="1" style="margin-bottom:10px" value="1" class="form-control" placeholder="Enter seconds...">
+
         <div class="card">
                 <div class="card-header">Choose targets clicks</div>
                 <ul class="list-group list-group-flush">
@@ -114,6 +123,10 @@
          </div>
     </div>
     <div class="col col-lg-3 additional" style="display:none;" id="iaps-additional">
+         <input id="iaps-groupByInterval" class="groupByInterval" type="checkbox" onchange="changeMS(this.checked, 'iaps')" value="nback">
+        <label for="iaps-groupByInterval">Show one point per X seconds: </label>
+        <input type="number" id="iaps-interval" step="1" min="1" style="margin-bottom:10px" value="1" class="form-control" placeholder="Enter seconds...">
+
         <div class="card">
                 <!-- Default panel contents -->
                 <div class="card-header">Choose targets clicks</div>
@@ -146,6 +159,9 @@
 
 </div>
 <script>
+function changeMS(checked, type){
+    $("#" +type+"-interval").prop('disabled', !checked);
+}
  window.onresize = function() { Plotly.Plots.resize( 'myDiv' );};
 function changeSelect(select, category)
 {
@@ -154,7 +170,10 @@ function changeSelect(select, category)
 
     let selected_task_id = select.options[select.selectedIndex].getAttribute("taskid");
     console.log(selected_task_id);
-    socket.emit("selectedAnalysisChanged",selected_task_id, category);
+    let groupByInterval = $('#'+category+'-groupByInterval').is(":checked");
+    let interval = $('#'+category+'-interval').val();
+    console.log(groupByInterval, interval)
+    socket.emit("selectedAnalysisChanged",selected_task_id, category, groupByInterval, interval);
 }
 var socket = io.connect(location.protocol + '//' + location.host);
 socket.on('changeAnalysisData', changeData);
@@ -259,9 +278,9 @@ function insertNbackShapes(taskData){
         hover.x.push(click.time.toString());
         hover.y.push(NaN);
         hover.text.push(`Target: <strong>${click.target.toString()}</strong><br>Clicked: ${click.clicked.toString()}<br>Is correct: ${click.is_correct.toString()}<br>Delay: ${click.delay.toString()}`);
-        console.log(`Clicked: ${click.clicked.toString()}<br>Is correct: ${click.is_correct.toString()}<br>Target: ${click.target.toString()}<br>Delay: ${click.delay.toString()}`);
+        // console.log(`Clicked: ${click.clicked.toString()}<br>Is correct: ${click.is_correct.toString()}<br>Target: ${click.target.toString()}<br>Delay: ${click.delay.toString()}`);
         hover.customcolor.push(NBackClickToColor(click.clicked, click.is_correct));
-        console.log("got to here");
+        // console.log("got to here");
         layout.shapes.push({
             type: 'line',
             x0: click.time.toString(),
@@ -283,7 +302,7 @@ function insertNbackShapes(taskData){
 
 function changeData(taskData)
 {
-    $("input[type=checkbox]").prop("checked", false);
+    $("input[type=checkbox]").not(".groupByInterval").prop("checked", false);
     data = [];
     hover.x = [];
     hover.y = [];

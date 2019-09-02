@@ -108,7 +108,7 @@ def insert_image_click(table, data):
 # #        values.append(x[data[wave][sensor_index]])
 # #    return times, values
 
-def getTaskData(task):
+def getTaskData(task, group_by_interval=False, interval=1):
     waves = {"alpha", "betaH", "betaL", "gamma", "theta"}
     data = []
     result = myclient.query('SHOW FIELD KEYS from ' + task)
@@ -117,9 +117,22 @@ def getTaskData(task):
             if col in x["fieldKey"]:
                 values = []
                 times = []
-                res = myclient.query('select {} from {}'.format(x["fieldKey"], task)).get_points()
+                if group_by_interval:
+                    minTime = myclient.query(
+                        'select first({}),time from {}'.format(x["fieldKey"], task)).get_points()
+                    minTime = list(minTime)[0]['time']
+                    maxTime = myclient.query(
+                        'select last({}),time from {}'.format(x["fieldKey"], task)).get_points()
+                    maxTime = list(maxTime)[0]['time']
+                    res = myclient.query("SELECT mean({}) FROM {} WHERE time >='{}' AND time <='{}' GROUP BY time({}s)"
+                                         .format(x["fieldKey"], task, minTime, maxTime, interval)).get_points()
+                else:
+                    res = myclient.query("SELECT {} FROM {}".format(x["fieldKey"], task)).get_points()
                 for row in res:
-                    values.append(row[x["fieldKey"]])
+                    if group_by_interval:
+                        values.append(row["mean"])
+                    else:
+                        values.append(row[x["fieldKey"]])
                     times.append(row["time"])
                 data.append({'col': x["fieldKey"], 'data': {"times": times, "values": values}})
                 break
