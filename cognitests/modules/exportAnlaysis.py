@@ -73,7 +73,7 @@ def exportNBackTaskAnalysis(wb, sheet_name, task_id, round=None):
     clicks_index = (start_index[0] + 2 * len(sensors) + 6, start_index[1])
     createClicksTable("Clicks Analysis - Overall", wb, ws, clicks_analysis,
                       (clicks_index[0] + len(sensors) + 3, clicks_index[1] + 3))
-    clicks_waves_analysis = influx.getClicksWavesMeans("task" + str(task_id), round=round)
+    clicks_waves_analysis = influx.getClicksWavesMeansV2("task" + str(task_id), round=round)
     createTable("1500ms Before Correct Targets", wb, ws, (clicks_index[0], clicks_index[1]), waves, sensors,
                 clicks_waves_analysis["correct"])
     createTable("1500ms Before Incorrect Targets", wb, ws, (clicks_index[0], clicks_index[1] + 3 + len(waves)), waves,
