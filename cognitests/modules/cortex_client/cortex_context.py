@@ -137,13 +137,11 @@ def get_last_headset():
 
 
 if __name__ == '__main__':
-    print("Start test")
     import time
 
     ws = connect()
     t1 = time.time()
     auth = authorize(ws)
-    print(auth)
     print("authorize time", time.time() - t1)
     while True:
         print("************************************")

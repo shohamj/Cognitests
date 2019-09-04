@@ -6,13 +6,12 @@ import cognitests.modules.influxdbAPI as influx
 
 def createTable(name, wb, ws, start_index, waves, sensors, data):
     table_data = []
-    print("createTable", data)
     for sensor in sensors:
         arr = [sensor]
         for wave in waves:
             found = False
             for key in data:
-                if sensor + '_' + wave in key:
+                if sensor + '_' + wave == key:
                     arr.append(data[key])
                     found = True
             if not found:
@@ -26,7 +25,6 @@ def createTable(name, wb, ws, start_index, waves, sensors, data):
         'align': 'center',
         'valign': 'vcenter'})
     end_index = (start_index[0] + len(sensors), start_index[1] + len(waves))
-    print(end_index)
     ws.merge_range(start_index[0], start_index[1], start_index[0], end_index[1], name, merge_format)
     ws.add_table(start_index[0] + 1, start_index[1], end_index[0] + 1, end_index[1],
                  {"data": table_data, 'columns': cols, 'style': 'Table Style Light 9'})
@@ -45,7 +43,6 @@ def createClicksTable(name, wb, ws, analysis, start_index):
         data[0].append(value["amount"])
         data[1].append(str(round(value["percentage"], 2)) + "%")
         data[2].append(value["delay"])
-    print(data)
     end_index = (start_index[0] + 3, start_index[1] + 6)
     merge_format = wb.add_format({
         'bold': 1,
@@ -63,13 +60,13 @@ def exportNBackTaskAnalysis(wb, sheet_name, task_id, round=None):
     start_index = (2, 1)
     waves = ["alpha", "betaH", "betaL", "gamma", "theta"]
     sensors = influx.getTaskSensors("task" + str(task_id))
-    data_rest = influx.getTaskMeansByStatus("task" + str(task_id), "rest", round=round)
+    data_rest = influx.getTaskMeansByStatusV2("task" + str(task_id), "rest", round=round)
     createTable("Rest", wb, ws, start_index, waves, sensors, data_rest)
-    data_fixation = influx.getTaskMeansByStatus("task" + str(task_id), "fixation", round=round)
+    data_fixation = influx.getTaskMeansByStatusV2("task" + str(task_id), "fixation", round=round)
     createTable("Fixation - Plus Sign", wb, ws, (start_index[0] + len(sensors) + 3, start_index[1]), waves, sensors, data_fixation)
-    data_targets = influx.getTaskMeansByStatus("task" + str(task_id), "target", round=round)
+    data_targets = influx.getTaskMeansByStatusV2("task" + str(task_id), "target", round=round)
     createTable("Targets", wb, ws, (start_index[0], start_index[1] + len(waves) + 3), waves, sensors, data_targets)
-    data_non_targets = influx.getTaskMeansByStatus("task" + str(task_id), "two-words", round=round)
+    data_non_targets = influx.getTaskMeansByStatusV2("task" + str(task_id), "two-words", round=round)
     createTable("Two Words", wb, ws, (start_index[0] + len(sensors) + 3, start_index[1] + len(waves) + 3), waves,
                 sensors, data_non_targets)
     clicks_analysis = influx.getClicksAnalysis("task" + str(task_id), round=round)
@@ -100,7 +97,6 @@ def exportMultipleTasksAnalysis(tasks, dir_path, type, log):
 
 def exportGeneralAnalysis(wb, tasks, sheet_name, round=None):
     allwaves = influx.getAllWaves(tasks, round=round)
-    print(allwaves)
     ws = wb.add_worksheet(sheet_name)
     cells_format = wb.add_format({'align': 'left'})
     ws.set_column(0, 100, 10, cells_format)
@@ -115,7 +111,6 @@ def exportGeneralAnalysis(wb, tasks, sheet_name, round=None):
     for wave in waves:
         arr = []
         a = np.array(allwaves[wave])
-        print(a)
         arr.append(wave)
         arr.append(np.mean(a))
         arr.append(np.median(a))
@@ -123,7 +118,6 @@ def exportGeneralAnalysis(wb, tasks, sheet_name, round=None):
         arr.append(np.percentile(a, 25))
         arr.append(np.percentile(a, 75))
         table_data.append(arr)
-    print(table_data)
     merge_format = wb.add_format({
         'bold': 1,
         'align': 'center',
@@ -169,7 +163,6 @@ def exportEyesTaskAnalysis(wb, sheet_name, task_id, round=None):
     start_index = (2, 1)
     waves = ["alpha", "betaH", "betaL", "gamma", "theta"]
     sensors = influx.getTaskSensors("task" + str(task_id))
-    print("Sensors:", sensors)
     data_open = influx.getTaskMeansByEyesState("task" + str(task_id), "Open", round=round)
     createTable("Eyes Open - Mean", wb, ws, start_index, waves, sensors, data_open)
     data_closed = influx.getTaskMeansByEyesState("task" + str(task_id), "Open", round=round)
@@ -218,7 +211,6 @@ def IAPSMeanRT(tasks, wb, ws, start_index, log=lambda x: print(x)):
     men_rt = influx.getRTByDT(men)
     women_rt = influx.getRTByDT(women)
     overall_rt = influx.getRTByDT(all_ids)
-    print(men_rt)
     men_rt_mean = {}
     women_rt_mean = {}
     overall_rt_mean = {}
@@ -229,7 +221,6 @@ def IAPSMeanRT(tasks, wb, ws, start_index, log=lambda x: print(x)):
     for rt in overall_rt:
         overall_rt_mean[rt] = np.mean(np.array(overall_rt[rt]))
     # Creating the table
-    print("overall_rt_mean", overall_rt_mean)
     all_rts = overall_rt_mean.keys()
     men_row = ["Men"]
     women_row = ["Women"]
@@ -258,9 +249,6 @@ def IAPSMeanRT(tasks, wb, ws, start_index, log=lambda x: print(x)):
         'align': 'center',
         'valign': 'vcenter'})
     end_index = (start_index[0] + 3, start_index[1] + len(all_rts))
-    print("cols", cols)
-    print("table data", table_data)
-    print(end_index)
     ws.merge_range(start_index[0], start_index[1], start_index[0], end_index[1], "Mean Reaction Time (Milliseconds)",
                    merge_format)
     ws.merge_range(start_index[0] + 1, start_index[1], start_index[0] + 1, end_index[1],
@@ -289,10 +277,6 @@ def createPrecentTable(data, wb, ws, start_index, name, log=lambda x: print(x)):
         'align': 'center',
         'valign': 'vcenter'})
     end_index = (start_index[0] + 3, start_index[1] + len(data))
-    print("end", end_index)
-    print("cols", cols)
-    print("table data", table_data)
-    print(end_index)
     ws.merge_range(start_index[0], start_index[1], start_index[0], end_index[1], name,
                    merge_format)
     ws.add_table(start_index[0] + 1, start_index[1], end_index[0] + 1, end_index[1],
@@ -333,7 +317,6 @@ def IAPSCategories(tasks, wb, ws, start_index, log=lambda x: print(x)):
     for t in tasks:
         tasks_id.append(t["id"])
     categories = influx.getClicksByCategory(tasks_id)
-    print(categories)
     if categories:
         keys = next(iter(categories.values())).keys()
     else:
@@ -349,9 +332,6 @@ def IAPSCategories(tasks, wb, ws, start_index, log=lambda x: print(x)):
         'align': 'center',
         'valign': 'vcenter'})
     end_index = (start_index[0] + len(categories), start_index[1] + len(keys))
-    print(end_index)
-    print(cols)
-    print(table_data)
     ws.merge_range(start_index[0], start_index[1], start_index[0], end_index[1], "Categories",
                    merge_format)
     ws.add_table(start_index[0] + 1, start_index[1], end_index[0] + 1, end_index[1],
@@ -393,7 +373,6 @@ def exportIAPSTaskAnalysis(task, dir_path, log):
 
     waves = ["alpha", "betaH", "betaL", "gamma", "theta"]
     sensors = influx.getTaskSensors(str(task["id"]))
-    print("sensors", sensors)
     start_index = (end_index[0] + 2, start_index[1])
     data_pleasant = influx.getPicturesTimes(str(task["id"]), "response='Pleasant'")
     end_index = createTable("Pleasant", wb, ws, start_index, waves, sensors, data_pleasant)

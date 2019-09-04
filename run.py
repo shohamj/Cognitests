@@ -1,5 +1,5 @@
-import eventlet
-eventlet.monkey_patch(thread=True)
+# import eventlet
+# eventlet.monkey_patch(thread=True)
 import multiprocessing
 
 from cognitests.helpers import main

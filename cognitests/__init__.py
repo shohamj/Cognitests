@@ -17,7 +17,7 @@ app.config['SQLALCHEMY_BINDS'] = {'tasks': 'sqlite:///../DBS/tasks/settings.db'}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # will be removed next major patch
 
 db = SQLAlchemy(app)
-socketio = SocketIO(app, async_mode="eventlet")
+socketio = SocketIO(app, async_mode="threading")
 
 # Globals shared by routes.py, events.py, and helpers.py
 TASK = None

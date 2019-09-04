@@ -515,14 +515,42 @@ def getPicturesTimes(task, by_query):
     return t
 
 
+def getTaskMeansByStatusV2(task, status, round=None):
+    import numpy as np
+    round_query = "round!='Waiting' AND round!='Trial Round'"
+    if round:
+        round_query = "round='" + round + "'"
+    waves = {"alpha", "betaH", "betaL", "gamma", "theta"}
+    sensors = getTaskSensors(task)
+    query = "SELECT * FROM (SELECT * FROM {} where (type='pow' and round!='') OR type='dev' fill(previous)) WHERE type='pow' AND status='{}' AND {}".format(task, status, round_query)
+    rows = myclient.query(query).get_points()
+    print(query)
+    res = {}
+    for wave in waves:
+        for sensor in sensors:
+            res[sensor + '_' + wave] = []
+    for row in rows:
+        for sensor in sensors:
+            if isinstance(row[sensor], int) and row[sensor] > 2:
+                for wave in waves:
+                    res[sensor + '_' + wave].append(row[sensor + '_' + wave])
+    for key in res:
+        if len(res[key]) > 1:
+            arr = np.array(res[key])
+            mean = np.mean(arr)
+            std = np.std(arr)
+            norm_arr = arr[((arr >= mean -2*std) & (arr <= mean + 2*std))]
+            res[key] = np.mean(norm_arr)
+        else:
+            res[key] = None
+
+        # res[key] = list(norm_arr)
+    return res
+
 if __name__ == '__main__':
     start_influx()
-    print(getClicksWavesMeans("task99", "Round 1"))
-
-    # import numpy as np
-    #
-    # men_rt_mean = {}
-    # for rt in p2:
-    #     men_rt_mean[rt] = np.mean(np.array(p2[rt]))
-    # print("men_rt_mean", men_rt_mean)
+    data = getTaskMeansByStatus("task9", "target")
+    dataV2 = getTaskMeansByStatusV2("task9", "target")
+    for key in dataV2:
+        print(key+":", "V1:", data['mean_'+key], "V2:", dataV2[key])
     close_influx()
