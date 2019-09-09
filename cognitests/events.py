@@ -161,13 +161,18 @@ def analysisGroupsChanged(groups, select):
 @socketio.on('selectedAnalysisChanged')
 def selectedAnalysisChanged(taskid, type, group_by_interval, interval):
     print(group_by_interval, interval)
+    if taskid == None:
+        socketio.emit('changeAnalysisData', {"data": [], "clicks": [], "type": type})
+        return
     if group_by_interval:
         interval_value = int(interval)
     else:
         interval_value = 1
-    taskData = influx.getTaskData("task" + str(taskid), group_by_interval, interval_value)
+    taskData = influx.getTaskDataV2("task" + str(taskid), group_by_interval, interval_value)
+    print("Got Data")
     if type == "nback":
         taskClicks = influx.getNbackTaskClicks("task" + str(taskid))
+        print("Got Clicks")
         socketio.emit('changeAnalysisData', {"data": taskData, "clicks": taskClicks, "type": type})
     if type == "iaps":
         taskClicks = influx.getIAPSTaskClicks("task" + str(taskid))

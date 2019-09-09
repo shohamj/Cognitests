@@ -11,7 +11,7 @@ def createTable(name, wb, ws, start_index, waves, sensors, data):
         for wave in waves:
             found = False
             for key in data:
-                if sensor + '_' + wave == key:
+                if sensor + '_' + wave == key or '_' + sensor + '_' + wave in key:
                     arr.append(data[key])
                     found = True
             if not found:

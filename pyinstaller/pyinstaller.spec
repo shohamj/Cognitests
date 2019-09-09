@@ -42,7 +42,7 @@ else:
     cipher_obj = None
 
 a = Analysis(['../run.py'],
-             hiddenimports=[    ],
+             hiddenimports=['engineio.async_drivers.threading'],
              datas=[('../cognitests/templates', 'cognitests/templates'), ('../cognitests/static', 'cognitests/static'), ('../influxdb', 'influxdb')],
              hookspath=["."],  # To find "hook-cefpython3.py"
              cipher=cipher_obj,

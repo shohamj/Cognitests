@@ -109,12 +109,14 @@ def insert_image_click(table, data):
 # #    return times, values
 
 def getTaskData(task, group_by_interval=False, interval=1):
+    import time
+    t = time.time()
     waves = {"alpha", "betaH", "betaL", "gamma", "theta"}
     data = []
-    result = myclient.query('SHOW FIELD KEYS from ' + task)
-    for x in result.get_points():
-        for col in waves:
-            if col in x["fieldKey"]:
+    keys = myclient.query('SHOW FIELD KEYS from ' + task).get_points()
+    for x in keys:
+        for wave in waves:
+            if wave in x["fieldKey"]:
                 values = []
                 times = []
                 if group_by_interval:
@@ -136,6 +138,7 @@ def getTaskData(task, group_by_interval=False, interval=1):
                     times.append(row["time"])
                 data.append({'col': x["fieldKey"], 'data': {"times": times, "values": values}})
                 break
+    print("GetTaskData -", task, "group_by_interval", group_by_interval, "interval", interval, "Time took:", time.time()-t)
     return data
 
 
@@ -185,7 +188,7 @@ def getTaskSensors(task):
 
 
 def getTaskMeansByStatus(task, status, round=None):
-    roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
+    roundQuery = " AND round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         roundQuery = " AND round='" + round + "'"
     means = myclient.query(
@@ -198,7 +201,7 @@ def getTaskMeansByStatus(task, status, round=None):
 
 
 def getTaskMeansByEyesState(task, state, round=None):
-    roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
+    roundQuery = " AND round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         roundQuery = " AND round='" + round + "'"
     means = myclient.query(
@@ -211,7 +214,7 @@ def getTaskMeansByEyesState(task, state, round=None):
 
 
 def getTaskMaxByEyesState(task, state, round=None):
-    roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
+    roundQuery = " AND round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         roundQuery = " AND round='" + round + "'"
     means = myclient.query(
@@ -227,7 +230,7 @@ def getClicksAnalysis(task, diff=None, round=None):
     diffString = ""
     if diff:
         diffString = " AND difficulty=" + str(diff)
-    roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
+    roundQuery = " AND round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         roundQuery = " AND round='" + round + "'"
     print(
@@ -309,7 +312,7 @@ def getMeanForClicks(clicks, task):
 
 
 def getClicksWavesMeansV2(task, round=None):
-    roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
+    roundQuery = " AND round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         roundQuery = " AND round='" + round + "'"
     correct = myclient.query(
@@ -324,7 +327,7 @@ def getClicksWavesMeansV2(task, round=None):
     return res
 
 def getClicksWavesMeans(task, round=None):
-    roundQuery = " AND round!='Waiting' AND round!='Trial Round'"
+    roundQuery = " AND round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         roundQuery = " AND round='" + round + "'"
     correct = myclient.query(
@@ -532,7 +535,7 @@ def getPicturesTimes(task, by_query):
 
 def getTaskMeansByStatusV2(task, status, round=None):
     import numpy as np
-    round_query = "round!='Waiting' AND round!='Trial Round'"
+    round_query = "round!='Waiting' AND round!='Trial Round' AND round!='' "
     if round:
         round_query = "round='" + round + "'"
     waves = {"alpha", "betaH", "betaL", "gamma", "theta"}
@@ -592,14 +595,63 @@ def getMeanForClicksV2(clicks, task):
             res[key] = None
     return res
 
+def getTaskDataV2(task, group_by_interval=False, interval=1):
+    print(task)
+    import time
+    t = time.time()
+    waves = ["alpha", "betaH", "betaL", "gamma", "theta"]
+    sensors = getTaskSensors(task)
+    res = []
+    if group_by_interval:
+        first = sensors[0] + '_' + waves[0]
+        minTime = myclient.query(
+            'select first({}),time from {}'.format(first,task)).get_points()
+        minTime = list(minTime)[0]['time']
+        print(minTime)
+
+        maxTime = myclient.query(
+            'select last({}),time from {}'.format(first,task)).get_points()
+        maxTime = list(maxTime)[0]['time']
+        rows = myclient.query("SELECT mean(*) FROM {} WHERE time >='{}' AND time <='{}' GROUP BY time({}s)".format(task, minTime, maxTime, interval)).get_points()
+        rows = list(rows)
+    else:
+        rows = list(myclient.query("SELECT * FROM {} WHERE type='pow' ".format(task)).get_points())
+
+    for wave in waves:
+        for sensor in sensors:
+            col = sensor + '_' + wave
+            data = {'times': [], 'values': []}
+            for row in rows:
+                data['times'].append(row['time'])
+                if group_by_interval:
+                    data['values'].append(row['mean_' + col])
+                else:
+                    data['values'].append(row[col])
+            res.append({'col': col, 'data': data})
+    print("getTaskDataV2:", time.time() -t)
+    return res
 if __name__ == '__main__':
-    start_influx()
-    data = getClicksWavesMeans("task6")["correct"]
-    dataV2 = getClicksWavesMeansV2("task6")["correct"]
-    for key in dataV2:
-        print(key+":", "V1:", data[key], "V2:", dataV2[key])
-    # data = getTaskMeansByStatus("task6", "target")
-    # dataV2 = getTaskMeansByStatusV2("task6", "target")
+    # start_influx()
+    myclient = InfluxDBClient(database=dbname)
+
+    import cProfile
+    # data = getClicksWavesMeans("task6")["correct"]
+    # dataV2 = getClicksWavesMeansV2("task6")["correct"]
+    # for key in dataV2:
+    #     print(key+":", "V1:", data[key], "V2:", dataV2[key])
+    # data = getTaskMeansByStatus("task1", "rest")
+    # dataV2 = getTaskMeansByStatusV2("task1", "rest")
     # for key in dataV2:
     #     print(key+":", "V1:", data['mean_'+key], "V2:", dataV2[key])
+    # cProfile.run('getTaskDataV2("task3", group_by_interval=True, interval=10)')
+    data = getTaskDataV2("task3", group_by_interval=True, interval=10)
+    print(data)
+    # dv2 = getTaskDataV2("task3")
+    # dv1 = getTaskData("task3")
+    # print(dv2)
+    # data = getTaskData("task40", group_by_interval=False, interval=10)
+    # print(list(data)[0])
+    # getTaskData("task4", group_by_interval=True, interval=1)
+    # getTaskData("task4", group_by_interval=True, interval=5)
+    # getTaskData("task4", group_by_interval=True, interval=10)
     close_influx()
