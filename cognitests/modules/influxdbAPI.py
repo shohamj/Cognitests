@@ -542,7 +542,6 @@ def getTaskMeansByStatusV2(task, status, round=None):
     sensors = getTaskSensors(task)
     query = "SELECT * FROM (SELECT * FROM {} where (type='pow' and round!='') OR type='dev' fill(previous)) WHERE type='pow' AND status='{}' AND {}".format(task, status, round_query)
     rows = myclient.query(query).get_points()
-    print(query)
     res = {}
     for wave in waves:
         for sensor in sensors:
@@ -558,6 +557,8 @@ def getTaskMeansByStatusV2(task, status, round=None):
             mean = np.mean(arr)
             std = np.std(arr)
             norm_arr = arr[((arr >= mean -2*std) & (arr <= mean + 2*std))]
+            print("****************************************{}***********************************************".format(key))
+            print(norm_arr)
             res[key] = np.mean(norm_arr)
         else:
             res[key] = None
@@ -596,7 +597,6 @@ def getMeanForClicksV2(clicks, task):
     return res
 
 def getTaskDataV2(task, group_by_interval=False, interval=1):
-    print(task)
     import time
     t = time.time()
     waves = ["alpha", "betaH", "betaL", "gamma", "theta"]
@@ -607,7 +607,6 @@ def getTaskDataV2(task, group_by_interval=False, interval=1):
         minTime = myclient.query(
             'select first({}),time from {}'.format(first,task)).get_points()
         minTime = list(minTime)[0]['time']
-        print(minTime)
 
         maxTime = myclient.query(
             'select last({}),time from {}'.format(first,task)).get_points()
@@ -628,7 +627,7 @@ def getTaskDataV2(task, group_by_interval=False, interval=1):
                 else:
                     data['values'].append(row[col])
             res.append({'col': col, 'data': data})
-    print("getTaskDataV2:", time.time() -t)
+    print("getTaskDataV2:", time.time() - t)
     return res
 if __name__ == '__main__':
     # start_influx()
@@ -644,8 +643,8 @@ if __name__ == '__main__':
     # for key in dataV2:
     #     print(key+":", "V1:", data['mean_'+key], "V2:", dataV2[key])
     # cProfile.run('getTaskDataV2("task3", group_by_interval=True, interval=10)')
-    data = getTaskDataV2("task3", group_by_interval=True, interval=10)
-    print(data)
+    data = getTaskMeansByStatusV2("task8", 'rest', 'Round 3')
+    print(data["F3_alpha"])
     # dv2 = getTaskDataV2("task3")
     # dv1 = getTaskData("task3")
     # print(dv2)
@@ -654,4 +653,4 @@ if __name__ == '__main__':
     # getTaskData("task4", group_by_interval=True, interval=1)
     # getTaskData("task4", group_by_interval=True, interval=5)
     # getTaskData("task4", group_by_interval=True, interval=10)
-    close_influx()
+    # close_influx()

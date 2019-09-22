@@ -22,15 +22,21 @@ def export_tasks_data(tasks_ids=[], filename="default", export_zip=False, export
             task_data = check_output(
                 ["influxdb\influx.exe", "-database", "Tasks", "-execute", "select * from task" + str(id), "-format",
                  "json"])
+
             task_data = json.loads(task_data)
+
             t = Task.query.get(id).as_dict()
             s = Subject.query.get(t['subject_id']).as_dict()
             g = db.session.query(PartOfGroup.group_id).filter_by(subject_id=t['subject_id']).all()
-            data = task_data["results"][0]
+            data = task_data
+
             data["task"] = t
             data["subject"] = s
             data["groups"] = g
             data_list.append(data)
+            f = open("data3.json", "w")
+            f.write(str(data_list))
+            f.close()
         log("Saving the ZIP file...")
         with open("Exports/data/" + filename + '.json', "w") as jsonFile:
             json.dump(data_list, jsonFile)
@@ -108,7 +114,7 @@ def insert_tasks(tasks, console=print):
                 if not exists:
                     db.session.add(PartOfGroup(group_id=group[0], subject_id=s_id))
             db.session.commit()
-            insert_data(data, t_id)
+            insert_data(data["results"], t_id)
             log.append("Imported: Subject: " + s['name'] + " Started: " + time.strftime('%Y-%m-%d %H:%M:%S',
                                                                                         time.localtime(
                                                                                             t['start_time'])))
@@ -132,8 +138,8 @@ def insert_data(data, task_id):
     print(data)
     allData = []
     points = {}
-    if 'series' in data:
-        series = data['series'][0]
+    for result in data:
+        series = result['series'][0]
         print(series)
         points["measurement"] = "task" + str(task_id)
         cols = series["columns"]

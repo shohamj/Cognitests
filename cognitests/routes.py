@@ -599,3 +599,36 @@ def get_mode():
     if get_test_mode():
         return "true"
     return "false"
+
+@app.route('/getAnalysisChanged', methods=['GET'])
+def selectedAnalysisChanged():
+    taskid = request.args.get('taskid')
+    type = request.args.get('type')
+    group_by_interval = request.args.get('group_by_interval') == 'true'
+    interval = request.args.get('interval')
+    print(taskid,type, group_by_interval, interval)
+    if not taskid:
+        return jsonify({"data": [], "clicks": [], "states": [], "type": type})
+    if taskid == None:
+        socketio.emit('changeAnalysisData', {"data": [], "clicks": [], "type": type})
+        return
+    if group_by_interval:
+        interval_value = int(interval)
+    else:
+        interval_value = 1
+    taskData = influx.getTaskDataV2("task" + str(taskid), group_by_interval, interval_value)
+    print("Got Data")
+    if type == "nback":
+        taskClicks = influx.getNbackTaskClicks("task" + str(taskid))
+        print("Got Clicks")
+        return jsonify({"data": taskData, "clicks": taskClicks, "type": type})
+
+    if type == "iaps":
+        taskClicks = influx.getIAPSTaskClicks("task" + str(taskid))
+        print(taskClicks)
+        return jsonify({"data": taskData, "clicks": taskClicks, "type": type})
+
+    if type == "eyes":
+        states = influx.getEyesStatesTimes("task" + str(taskid))
+        print(states)
+        return jsonify({"data": taskData, "states": states, "type": type})

@@ -174,6 +174,8 @@ def selectedAnalysisChanged(taskid, type, group_by_interval, interval):
         taskClicks = influx.getNbackTaskClicks("task" + str(taskid))
         print("Got Clicks")
         socketio.emit('changeAnalysisData', {"data": taskData, "clicks": taskClicks, "type": type})
+        print("Data Sent!!!!!!!!!!!!!!!")
+
     if type == "iaps":
         taskClicks = influx.getIAPSTaskClicks("task" + str(taskid))
         print(taskClicks)

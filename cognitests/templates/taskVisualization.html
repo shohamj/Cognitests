@@ -167,14 +167,18 @@ function changeSelect(select, category)
 {
     Plotly.purge('myDiv');
     document.getElementById("loading").style.display = "";
-
     let selected_task_id = select.options[select.selectedIndex].getAttribute("taskid");
     let groupByInterval = $('#'+category+'-groupByInterval').is(":checked");
     let interval = $('#'+category+'-interval').val();
-    socket.emit("selectedAnalysisChanged",selected_task_id, category, groupByInterval, interval);
+    $( "#" + category + "Tasks" ).prop( "disabled", true );
+    $('.selectpicker').selectpicker('refresh');
+    $.get("/getAnalysisChanged", { taskid: selected_task_id, type: category, group_by_interval: groupByInterval, interval:interval})
+    .done(changeData)
+
+    // socket.emit("selectedAnalysisChanged",selected_task_id, category, groupByInterval, interval);
 }
 var socket = io.connect(location.protocol + '//' + location.host);
-socket.on('changeAnalysisData', changeData);
+// socket.on('changeAnalysisData', changeData);
 
 function NBackClickToColor(clicked, correct) {
   if(clicked == true && correct==true)
@@ -300,7 +304,6 @@ function insertNbackShapes(taskData){
 
 function changeData(taskData)
 {
-    console.log("Got Data")
     $("input[type=checkbox]").not(".groupByInterval").prop("checked", false);
     data = [];
     hover.x = [];
@@ -317,44 +320,47 @@ function changeData(taskData)
     document.getElementById("loading").style.display = "none";
     data.push(hover);
 
-taskData.data.forEach(function(item) {
-  data.push({
-  x: item['data']['times'],
-  y: item['data']['values'],
-  name: item['col'].toString(),
-  type: 'scatter',
-  visible: "legendonly",
-  hoverinfo: 'none',
-  customhoverinfo: 'x+y'});
-});
+    taskData.data.forEach(function(item) {
+      data.push({
+      x: item['data']['times'],
+      y: item['data']['values'],
+      name: item['col'].toString(),
+      type: 'scatter',
+      visible: "legendonly",
+      hoverinfo: 'none',
+      customhoverinfo: 'x+y'});
+    });
 
-Plotly.newPlot('myDiv', data, layout).then(gd => {
-  gd.on('plotly_restyle', d => {
-    let mins = [];
-    for (var i = 1; i < data.length; i++) {
-        if (data[i].visible === true) {
-           mins.push(Math.min.apply(null, data[i].y));
+    Plotly.newPlot('myDiv', data, layout).then(gd => {
+      gd.on('plotly_restyle', d => {
+        let mins = [];
+        for (var i = 1; i < data.length; i++) {
+            if (data[i].visible === true) {
+               mins.push(Math.min.apply(null, data[i].y));
+            }
         }
-    }
-    tracesMin = Math.min.apply(null,mins);
-    if(tracesMin == Infinity)
-        {
-        tracesMin = 0;
+        tracesMin = Math.min.apply(null,mins);
+        if(tracesMin == Infinity)
+            {
+            tracesMin = 0;
+            }
+        for (var i = 0; i < data[0].y.length; i++) {
+               if (!isNaN(data[0].y[i])) {
+               data[0].y[i] = tracesMin;
+            }
         }
-    for (var i = 0; i < data[0].y.length; i++) {
-           if (!isNaN(data[0].y[i])) {
-           data[0].y[i] = tracesMin;
-        }
-    }
-    savePlotChanges();
-  });
-      document.getElementById("loading").style.display = "none";
+        savePlotChanges();
+      });
+          document.getElementById("loading").style.display = "none";
+          $( "#" + taskData.type + "Tasks" ).prop( "disabled", false );
+              $('.selectpicker').selectpicker('refresh');
 
-});
 
-let myPlot = document.getElementById('myDiv');
-myPlot.on('plotly_hover', lineChartHoverFunc);
-myPlot.on('plotly_unhover', lineChartUnHoverFunc);
+    });
+
+    let myPlot = document.getElementById('myDiv');
+    myPlot.on('plotly_hover', lineChartHoverFunc);
+    myPlot.on('plotly_unhover', lineChartUnHoverFunc);
 }
 function savePlotChanges() {
     let update = {
