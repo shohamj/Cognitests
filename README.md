@@ -28,5 +28,3 @@ Cognitests is a tool for creating, running and analyzing cognitive neuropsycholo
 After installing Cognitests successfuly, run "python pyinstaller/pyinstaller.py".
 When the process is over, the executable folder will show up.
 
-## Docs
-
