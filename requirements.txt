@@ -11,7 +11,7 @@ websocket-client==0.56.0
 pywin32==224
 numpy==1.16.4
 xlsxwriter==1.1.8
-psutil==5.6.2
+psutil==5.6.6
 pygame==1.9.6
 pandas==0.25.1
 
